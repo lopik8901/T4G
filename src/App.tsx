@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { ArrowLeft, ArrowRight, Camera, Check, ChevronRight, CircleHelp, Hand, Heart, Leaf, Maximize, Pause, Play, ShieldCheck, SlidersHorizontal, Sparkles, Trophy, Volume2, VolumeX, X } from 'lucide-react'
 import { useMirror } from './camera/useMirror'
 import { BalloonScene, PopEffects, type Pop } from './game/BalloonScene'
-import { createWorld, defaultSettings, type Settings } from './game/logic'
+import { balloonSpeeds, createWorld, defaultSettings, type Settings } from './game/logic'
 import { playPop, unlockSound } from './game/sound'
 import { SettingsPanel } from './components/SettingsPanel'
 
@@ -116,7 +116,41 @@ export default function App() {
         <aside className="setup-panel">
           <div className="panel-title"><span className="eyebrow"><Leaf size={16} /> AT YOUR OWN PACE</span><h2>Ready, set… relax.</h2><p>A feel-good activity for one or two.<br />Sitting or standing, everyone is welcome.</p></div>
           <ol className="how-steps"><li><span>1</span><div><strong>Make yourself comfortable</strong><p>Sit or stand in view of the camera.</p></div></li><li><span>2</span><div><strong>Reach for a balloon</strong><p>Move either hand. A small reach is plenty.</p></div></li><li><span>3</span><div><strong>Enjoy the little pops</strong><p>No timers. No wrong moves.</p></div></li></ol>
-          <div className="quick-settings"><div className="section-label"><span>YOUR ACTIVITY</span><button className="text-button" onClick={openSettings}>Adjust <SlidersHorizontal size={14} /></button></div><div className="quick-setting"><label htmlFor="quick-size">Balloons</label><select id="quick-size" value={settings.size} onChange={e => setSettings(value => ({ ...value, size: +e.target.value }))}><option value="0.85">Standard</option><option value="1.15">Large & easy to reach</option><option value="1.45">Extra large</option></select></div></div>
+          <div className="quick-settings">
+            <div className="section-label">
+              <span>YOUR ACTIVITY</span>
+              <button className="text-button" onClick={openSettings}>Adjust <SlidersHorizontal size={14} /></button>
+            </div>
+            <div className="quick-setting">
+              <label htmlFor="quick-mode">Game mode</label>
+              <select
+                id="quick-mode"
+                value={settings.speed}
+                onChange={event => setSettings(current => ({ ...current, speed: Number(event.target.value) }))}
+              >
+                <option value={balloonSpeeds.standard}>Standard</option>
+                <option value={balloonSpeeds.veryFast}>Very fast</option>
+                {settings.speed !== balloonSpeeds.standard && settings.speed !== balloonSpeeds.veryFast && (
+                  <option value={settings.speed}>Custom speed</option>
+                )}
+              </select>
+            </div>
+            {settings.speed === balloonSpeeds.veryFast && (
+              <p className="field-note">Balloons fly past quickly. Pop them before they leave the screen!</p>
+            )}
+            <div className="quick-setting">
+              <label htmlFor="quick-size">Balloons</label>
+              <select
+                id="quick-size"
+                value={settings.size}
+                onChange={event => setSettings(current => ({ ...current, size: Number(event.target.value) }))}
+              >
+                <option value="0.85">Standard</option>
+                <option value="1.15">Large & easy to reach</option>
+                <option value="1.45">Extra large</option>
+              </select>
+            </div>
+          </div>
           <button className="primary-button start-button" onClick={start} disabled={!ready}><Play size={18} fill="currentColor" /> Start {preview ? 'preview' : 'activity'}<ArrowRight size={19} /></button>
           <p className="start-note">{ready ? <><Check size={14} /> {preview ? 'Preview is ready. Tap balloons to pop.' : 'Camera is ready. Let’s make some smiles.'}</> : <><ArrowLeft size={14} /> Enable the camera to get started</>}</p>
           {mirror.cameraOn && <button className="text-button disconnect-button" onClick={mirror.stop}>Turn camera off</button>}

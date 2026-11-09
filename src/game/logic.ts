@@ -1,7 +1,14 @@
 export type Point = { x: number; y: number }
 export type Settings = { speed: number; size: number; count: number; volume: number; sensitivity: number; indicators: boolean; hands: number }
+
+// Both screens use these same speeds so the mode controls stay in sync.
+export const balloonSpeeds = {
+  standard: 1.5,
+  veryFast: 24, // Sixteen times standard: balloons cross the screen in a few seconds.
+}
+
 export const defaultSettings: Settings = {
-  speed: 1.5, // The former Lively pace is now the standard speed.
+  speed: balloonSpeeds.standard,
   size: 1.15,
   count: 4,
   volume: 0.3,

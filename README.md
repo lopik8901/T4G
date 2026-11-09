@@ -2,7 +2,7 @@
 
 A gentle AR magic mirror activity for elderly residents. The live webcam fills the play screen; residents pop glossy 3D balloons by reaching with either hand. Seated play, slow movements, and two residents are supported. No countdown, penalties, or game-over screen.
 
-The game has one standard pace, using the former **Lively** speed. There is no Gentle, Steady, or Lively mode selector. Staff can still adjust balloon speed in **Staff controls**.
+Choose **Standard** or **Very fast** under **Game mode** on the setup screen or in **Staff controls**. Standard is the default and uses the former Lively speed. Very fast moves balloons **16 times faster**, so they cross the screen in a few seconds and are easy to miss. Missed balloons return without a score penalty. Staff can also use the balloon speed slider to set a custom speed.
 
 ## Where to find things
 
@@ -64,7 +64,7 @@ Use a well-lit space with hands visible to the camera. The game starts at the st
 
 ## Staff controls
 
-- Balloon pace, size, and number (3–6). Each balloon has its own gentle speed and direction; the pace control adjusts them all together.
+- Game mode (**Standard** or **Very fast**), custom balloon speed, size, and number (3–6). Each balloon has its own speed and direction; the speed control adjusts them all together.
 - Sound volume, including mute.
 - Touch sensitivity: higher values enlarge collision zones.
 - Optional glow around detected palms.

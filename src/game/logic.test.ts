@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { createWorld, defaultSettings, mapToMirror, overlaps, popBalloon, stepWorld } from './logic.ts'
+import { balloonSpeeds, createWorld, defaultSettings, mapToMirror, overlaps, popBalloon, stepWorld } from './logic.ts'
 
 test('mirrors coordinates and compensates for a 4:3 camera cropped onto a 16:9 TV', () => {
   assert.deepEqual(mapToMirror({ x: 0.25, y: 0.5 }, 640, 480, 1920, 1080), { x: 0.75, y: 0.5 })
@@ -69,6 +69,30 @@ test('individual speeds and the staff pace control both scale travel', () => {
   }
   assert.ok(Math.abs((fast.x - 0.5) / (slow.x - 0.5) - 1.3 / 0.7) < 1e-10)
   for (let i = 0; i < 2; i++) assert.ok(Math.abs(fasterPace.balloons[i].x - 0.5 - (world.balloons[i].x - 0.5) * 2) < 1e-10)
+})
+
+test('very fast balloons leave the screen and recycle within three seconds', context => {
+  context.mock.method(Math, 'random', () => 0.5)
+  const standardWorld = createWorld()
+  Object.assign(standardWorld.balloons[0], { x: 0.1, y: 0.5, vx: 1, vy: 0, speed: 1 })
+  const fastWorld = structuredClone(standardWorld)
+  const fastSettings = { ...defaultSettings, speed: balloonSpeeds.veryFast }
+  let recycled = false
+
+  for (let frame = 0; frame < 60; frame++) {
+    stepWorld(standardWorld, 0.05, defaultSettings, true)
+    stepWorld(fastWorld, 0.05, fastSettings, true)
+    // A horizontal flight keeps y at 0.5 until the balloon returns from an edge.
+    if (fastWorld.balloons[0].y !== 0.5) {
+      recycled = true
+      break
+    }
+  }
+
+  assert.ok(recycled, 'an untouched very fast balloon leaves and returns promptly')
+  assert.ok(standardWorld.balloons[0].x < 1, 'the same balloon at standard speed is still on screen')
+  assert.equal(standardWorld.balloons[0].y, 0.5)
+  assert.equal(fastWorld.balloons[0].readyAt, 0, 'missed balloons return ready to pop')
 })
 
 test('horizontal and vertical speeds stay consistent on wide and portrait displays', () => {

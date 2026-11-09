@@ -1,5 +1,5 @@
 import { Hand, Maximize, Minus, Plus, RotateCcw, SlidersHorizontal, Volume2, X } from 'lucide-react'
-import type { Settings } from '../game/logic'
+import { balloonSpeeds, type Settings } from '../game/logic'
 
 type Props = { settings: Settings; onChange: (settings: Settings) => void; onReset: () => void; onFullscreen: () => void; onClose: () => void; cameraOn: boolean }
 export function SettingsPanel({ settings, onChange, onReset, onFullscreen, onClose, cameraOn }: Props) {
@@ -8,8 +8,37 @@ export function SettingsPanel({ settings, onChange, onReset, onFullscreen, onClo
     <div className="panel-heading"><span className="eyebrow"><SlidersHorizontal size={16} /> Staff controls</span><button className="icon-button" onClick={onClose} aria-label="Close settings"><X size={20} /></button></div>
     <h2>Make it comfortable.</h2>
     <p className="muted panel-description">Adjust the activity to suit your residents.</p>
-    <div className="setting"><div className="setting-label"><label htmlFor="speed">Balloon speed</label><span>{settings.speed === 1.5 ? 'Standard' : 'Custom'}</span></div>
-      <input id="speed" type="range" min="0.3" max="1.8" step="0.1" value={settings.speed} onChange={e => update('speed', +e.target.value)} /><div className="range-labels"><span>Slower</span><span>Faster</span></div>
+    <div className="setting">
+      <label>Game mode</label>
+      <div className="segmented" aria-label="Game mode">
+        <button
+          aria-pressed={settings.speed === balloonSpeeds.standard}
+          onClick={() => update('speed', balloonSpeeds.standard)}
+        >Standard</button>
+        <button
+          aria-pressed={settings.speed === balloonSpeeds.veryFast}
+          onClick={() => update('speed', balloonSpeeds.veryFast)}
+        >Very fast</button>
+      </div>
+      <p className="field-note">Very fast is 16 times standard speed. Balloons are easy to miss!</p>
+    </div>
+    <div className="setting">
+      <div className="setting-label">
+        <label htmlFor="speed">Balloon speed</label>
+        <span>
+          {settings.speed === balloonSpeeds.standard ? 'Standard' : settings.speed === balloonSpeeds.veryFast ? 'Very fast' : 'Custom'}
+        </span>
+      </div>
+      <input
+        id="speed"
+        type="range"
+        min="0.3"
+        max={balloonSpeeds.veryFast}
+        step="0.1"
+        value={settings.speed}
+        onChange={event => update('speed', Number(event.target.value))}
+      />
+      <div className="range-labels"><span>Slower</span><span>Faster</span></div>
     </div>
     <div className="setting"><label>Balloon size</label><div className="segmented" aria-label="Balloon size">{[['Standard', 0.85], ['Large', 1.15], ['Extra large', 1.45]].map(([label, value]) => <button key={label} aria-pressed={settings.size === value} onClick={() => update('size', +value)}>{label}</button>)}</div></div>
     <div className="setting setting-row"><label htmlFor="count">Balloons on screen</label><div className="stepper"><button aria-label="Fewer balloons" disabled={settings.count <= 3} onClick={() => update('count', settings.count - 1)}><Minus size={16} /></button><output id="count">{settings.count}</output><button aria-label="More balloons" disabled={settings.count >= 6} onClick={() => update('count', settings.count + 1)}><Plus size={16} /></button></div></div>
