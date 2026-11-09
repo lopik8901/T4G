@@ -2,6 +2,39 @@
 
 A gentle AR magic mirror activity for elderly residents. The live webcam fills the play screen; residents pop glossy 3D balloons by reaching with either hand. Seated play, slow movements, and two residents are supported. No countdown, penalties, or game-over screen.
 
+The game has one standard pace, using the former **Lively** speed. There is no Gentle, Steady, or Lively mode selector. Staff can still adjust balloon speed in **Staff controls**.
+
+## Where to find things
+
+```text
+src/                       The app's screen, appearance, and gameplay
+  App.tsx                  Main screen, setup, start, pause, and finish
+  main.tsx                 Starts the React app
+  styles.css               Colors, spacing, and screen layouts
+  camera/
+    useMirror.ts           Camera access and hand-tracking connection
+  components/
+    SettingsPanel.tsx       Staff controls for speed, size, sound, and hands
+  game/
+    BalloonScene.tsx        Draws balloons and handles hand or tap contact
+    logic.ts               Default settings, balloon movement, and scoring
+    logic.test.ts          Checks the game rules and movement
+    sound.ts               Balloon pop sounds
+public/                    Files the browser loads directly
+  balloon.svg              Balloon logo
+  hand-tracker.js          Detects hands in the background
+  mediapipe/               Hand-tracking files downloaded during setup
+scripts/
+  setup-assets.mjs         Prepares the local hand-tracking files
+tests/
+  activity.spec.ts         Browser checks for the complete activity
+package.json               Dependencies and commands to run the project
+playwright.config.ts       Browser test settings
+vite.config.ts             Development server and build settings
+tsconfig.json              TypeScript settings
+index.html                 The page that loads the app
+```
+
 ## Run locally
 
 Install **Node.js 22.18+** (Node 24 LTS recommended), then:
@@ -27,7 +60,7 @@ The first install downloads dependencies and Google's versioned Hand Landmarker 
 
 Connect the laptop to a TV using HDMI. On Windows, press **Win + P → Duplicate**; on macOS, enable display mirroring. Put the laptop/webcam where it faces the residents, choose **Fullscreen**, then start the activity. A 16:9 TV is supported, including cameras with a different aspect ratio.
 
-Use a well-lit space with hands visible to the camera. Start with the default gentle pace and large balloons. Residents can remain seated and use either hand. Adjust the laptop or seating so balloons are comfortably reachable without standing or leaning.
+Use a well-lit space with hands visible to the camera. The game starts at the standard pace with large balloons. Use **Staff controls → Balloon speed** to slow the activity down when needed. Residents can remain seated and use either hand. Adjust the laptop or seating so balloons are comfortably reachable without standing or leaning.
 
 ## Staff controls
 

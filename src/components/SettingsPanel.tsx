@@ -8,7 +8,7 @@ export function SettingsPanel({ settings, onChange, onReset, onFullscreen, onClo
     <div className="panel-heading"><span className="eyebrow"><SlidersHorizontal size={16} /> Staff controls</span><button className="icon-button" onClick={onClose} aria-label="Close settings"><X size={20} /></button></div>
     <h2>Make it comfortable.</h2>
     <p className="muted panel-description">Adjust the activity to suit your residents.</p>
-    <div className="setting"><div className="setting-label"><label htmlFor="speed">Balloon speed</label><span>{settings.speed < 0.8 ? 'Gentle' : settings.speed < 1.3 ? 'Steady' : 'Lively'}</span></div>
+    <div className="setting"><div className="setting-label"><label htmlFor="speed">Balloon speed</label><span>{settings.speed === 1.5 ? 'Standard' : 'Custom'}</span></div>
       <input id="speed" type="range" min="0.3" max="1.8" step="0.1" value={settings.speed} onChange={e => update('speed', +e.target.value)} /><div className="range-labels"><span>Slower</span><span>Faster</span></div>
     </div>
     <div className="setting"><label>Balloon size</label><div className="segmented" aria-label="Balloon size">{[['Standard', 0.85], ['Large', 1.15], ['Extra large', 1.45]].map(([label, value]) => <button key={label} aria-pressed={settings.size === value} onClick={() => update('size', +value)}>{label}</button>)}</div></div>

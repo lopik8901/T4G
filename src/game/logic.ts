@@ -1,6 +1,14 @@
 export type Point = { x: number; y: number }
 export type Settings = { speed: number; size: number; count: number; volume: number; sensitivity: number; indicators: boolean; hands: number }
-export const defaultSettings: Settings = { speed: 0.65, size: 1.15, count: 4, volume: 0.3, sensitivity: 1.35, indicators: true, hands: 2 }
+export const defaultSettings: Settings = {
+  speed: 1.5, // The former Lively pace is now the standard speed.
+  size: 1.15,
+  count: 4,
+  volume: 0.3,
+  sensitivity: 1.35,
+  indicators: true,
+  hands: 2,
+}
 export const colors = ['#ed6973', '#73b1e6', '#efc75c', '#7bbd98', '#a48dd1']
 export const colorNames = ['red', 'blue', 'yellow', 'green', 'purple']
 export type Balloon = { id: number; x: number; y: number; vx: number; vy: number; speed: number; phase: number; color: number; readyAt: number }
