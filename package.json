@@ -7,7 +7,7 @@
     "dev": "vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "node --test src/game/logic.test.ts",
+    "test": "node --test src/game/logic.test.ts src/game/round.test.ts",
     "setup:assets": "node scripts/setup-assets.mjs",
     "postinstall": "node scripts/setup-assets.mjs"
   },

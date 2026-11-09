@@ -3,12 +3,13 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Line, OrthographicCamera } from '@react-three/drei'
 import * as THREE from 'three'
 import type { HandFrame } from '../camera/useMirror'
-import { balloonRadius, colorNames, colors, mapToMirror, overlaps, popBalloon, stepWorld, type Balloon, type Settings, type World } from './logic'
+import { balloonPoints, balloonRadius, colorNames, colors, mapToMirror, overlaps, popBalloon, stepWorld, type Balloon, type Settings, type World } from './logic'
 
 export type Pop = { id: number; x: number; y: number; points: number; color: string }
 type Props = {
   world: RefObject<World>; hands: RefObject<HandFrame>; settings: Settings
   playing: boolean; preview: boolean; reducedMotion: boolean; onPop: (pop: Pop) => void
+  onStep?: (seconds: number, missedBalloons: number) => boolean
 }
 
 class SceneBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
@@ -17,6 +18,20 @@ class SceneBoundary extends Component<{ children: ReactNode }, { failed: boolean
   render() {
     return this.state.failed ? <div className="graphics-error" role="alert">3D graphics could not start. Enable hardware acceleration in Chrome or Edge, then reload.</div> : this.props.children
   }
+}
+
+// Colour the sphere from red at the top through to violet at the bottom.
+// Each balloon keeps this colour attribute ready for whenever it becomes a bonus.
+function addRainbowColors(geometry: THREE.SphereGeometry) {
+  const positions = geometry.getAttribute('position')
+  const rainbow = new Float32Array(positions.count * 3)
+  const color = new THREE.Color()
+  for (let vertex = 0; vertex < positions.count; vertex++) {
+    const height = (1 - positions.getY(vertex)) / 2
+    color.setHSL(height * 0.8, 1, 0.55)
+    color.toArray(rainbow, vertex * 3)
+  }
+  geometry.setAttribute('color', new THREE.BufferAttribute(rainbow, 3))
 }
 
 function BalloonMesh({ balloon, radius, world }: { balloon: Balloon; radius: number; world: RefObject<World> }) {
@@ -34,15 +49,22 @@ function BalloonMesh({ balloon, radius, world }: { balloon: Balloon; radius: num
     group.current.visible = visible
     group.current.position.set((balloon.x - 0.5) * size.width, (0.5 - balloon.y) * size.height, 0)
     group.current.rotation.z = Math.sin(world.current.time * 0.5 + balloon.phase) * 0.045
-    for (const mesh of [body.current, knot.current]) {
-      if (mesh) (mesh.material as THREE.MeshPhysicalMaterial).color.set(colors[balloon.color])
+    const bonus = !balloon.penalty && balloon.color === 0
+    if (body.current) {
+      const material = body.current.material as THREE.MeshPhysicalMaterial
+      if (material.vertexColors !== bonus) {
+        material.vertexColors = bonus
+        material.needsUpdate = true
+      }
+      material.color.set(balloon.penalty ? '#303746' : bonus ? '#ffffff' : colors[balloon.color])
     }
+    if (knot.current) (knot.current.material as THREE.MeshPhysicalMaterial).color.set(balloon.penalty ? '#303746' : bonus ? '#c56de8' : colors[balloon.color])
   })
-  return <group ref={group}>
+  return <group ref={group} visible={balloon.readyAt <= world.current.time}>
     <group scale={radius}>
       <mesh ref={body} scale={[1, 1.24, 0.86]}>
-        <sphereGeometry args={[1, 36, 28]} />
-        <meshPhysicalMaterial color={colors[balloon.color]} roughness={0.2} metalness={0.05} clearcoat={1} clearcoatRoughness={0.15} />
+        <sphereGeometry args={[1, 36, 28]} onUpdate={addRainbowColors} />
+        <meshPhysicalMaterial vertexColors={!balloon.penalty && balloon.color === 0} color={balloon.penalty ? '#303746' : balloon.color === 0 ? '#ffffff' : colors[balloon.color]} roughness={0.2} metalness={0.05} clearcoat={1} clearcoatRoughness={0.15} />
       </mesh>
       <mesh ref={knot} position={[0, -1.27, 0]} rotation={[0, 0, Math.PI]}>
         <coneGeometry args={[0.115, 0.16, 12]} />
@@ -79,27 +101,44 @@ function Scene(props: Props & { targets: RefObject<(HTMLButtonElement | null)[]>
   const { size } = useThree()
   const radius = balloonRadius(size.width, size.height, settings.size)
   useFrame((_, delta) => {
-    if (playing) stepWorld(world.current, delta, settings, reducedMotion, size.width / size.height)
+    const frame = hands.current
+
+    let active = playing
+    if (active) {
+      const missedBalloons = stepWorld(world.current, delta, settings, reducedMotion, size.width / size.height)
+      // The clock uses real active time; movement separately caps large frame jumps.
+      if (props.onStep?.(delta, missedBalloons)) active = false
+    }
     world.current.balloons.forEach((balloon, i) => {
       const target = props.targets.current[i]
       if (!target) return
-      target.style.display = playing && i < settings.count && balloon.readyAt <= world.current.time && balloon.x > 0 && balloon.x < 1 && balloon.y > 0 && balloon.y < 1 ? 'block' : 'none'
+      target.style.display = active && i < settings.count && balloon.readyAt <= world.current.time && balloon.x > 0 && balloon.x < 1 && balloon.y > 0 && balloon.y < 1 ? 'block' : 'none'
       target.style.left = `${balloon.x * 100}%`
       target.style.top = `${balloon.y * 100}%`
       target.style.width = `${radius * 2}px`
       target.style.height = `${radius * 2.48}px`
-      target.setAttribute('aria-label', `Pop ${colorNames[balloon.color]} balloon (+${balloon.color === 0 ? 3 : 1})`)
+      const points = balloonPoints(balloon)
+      const name = balloon.penalty ? 'penalty' : colorNames[balloon.color]
+      target.setAttribute('aria-label', `Pop ${name} balloon (${points > 0 ? '+' : ''}${points})`)
+      target.classList.toggle('bonus-balloon', !balloon.penalty && balloon.color === 0)
+      target.classList.toggle('penalty-balloon', balloon.penalty)
     })
-    if (!playing || preview || performance.now() - hands.current.time > 280) return
-    const frame = hands.current
-    const points = frame.hands.flatMap(hand => hand.points.map(point => mapToMirror(point, frame.width, frame.height, size.width, size.height)))
+    if (!active || preview || performance.now() - frame.time > 280) return
+
+    const handCircles = frame.hands
+      .map(hand => mapToMirror(hand.center, frame.width, frame.height, size.width, size.height))
       .filter(point => point.x >= 0 && point.x <= 1 && point.y >= 0 && point.y <= 1)
+
+    // Any tracked hand circle can pop a balloon simply by overlapping it.
     for (const balloon of world.current.balloons.slice(0, settings.count)) {
       if (balloon.readyAt > world.current.time) continue
-      if (points.some(point => overlaps(point, balloon, radius, size.width, size.height, settings.sensitivity))) {
-        const score = popBalloon(world.current, balloon)
-        if (score) onPop({ id: performance.now() + balloon.id, x: balloon.x, y: balloon.y, points: score, color: colors[balloon.color] })
-      }
+      const touching = handCircles.some(point => (
+        overlaps(point, balloon, radius, size.width, size.height, settings.sensitivity)
+      ))
+      if (!touching) continue
+
+      const points = popBalloon(world.current, balloon)
+      if (points) onPop({ id: performance.now() + balloon.id, x: balloon.x, y: balloon.y, points, color: colors[balloon.color] })
     }
   }, -1)
   return <>
@@ -115,20 +154,20 @@ function Scene(props: Props & { targets: RefObject<(HTMLButtonElement | null)[]>
 export function BalloonScene(props: Props) {
   const targets = useRef<(HTMLButtonElement | null)[]>([])
   const pop = (index: number) => {
-    if (!props.playing) return
+    if (!props.playing || !props.preview) return
     const balloon = props.world.current.balloons[index]
     const points = popBalloon(props.world.current, balloon)
     if (points) props.onPop({ id: performance.now() + balloon.id, x: balloon.x, y: balloon.y, points, color: colors[balloon.color] })
   }
   return <SceneBoundary><Canvas className="balloon-canvas" dpr={[1, 1.5]} gl={{ alpha: true, antialias: true }} fallback={<div className="graphics-error">This game needs WebGL. Please use Chrome or Edge with hardware acceleration enabled.</div>}>
     <Scene {...props} targets={targets} />
-  </Canvas><div className="balloon-targets">{Array.from({ length: props.settings.count }, (_, i) => <button key={i} ref={node => { targets.current[i] = node }} className="balloon-hit" style={{ display: 'none' }} onClick={() => pop(i)} aria-label={`Pop ${colorNames[i % 5]} balloon`} />)}</div></SceneBoundary>
+  </Canvas><div className="balloon-targets" aria-hidden={!props.preview}>{Array.from({ length: props.settings.count }, (_, i) => <button key={i} ref={node => { targets.current[i] = node }} className="balloon-hit" style={{ display: 'none' }} disabled={!props.preview} onClick={() => pop(i)} aria-label={`Pop ${colorNames[i % 5]} balloon`} />)}</div></SceneBoundary>
 }
 
 export function PopEffects({ pops, reducedMotion }: { pops: Pop[]; reducedMotion: boolean }) {
-  return <div className="effects-layer" aria-hidden="true">{pops.map(pop => <div key={pop.id} className={`pop-effect ${pop.points === 3 ? 'special-pop' : ''}`} style={{ left: `${pop.x * 100}%`, top: `${pop.y * 100}%` }}>
-    <span className="pop-points">+{pop.points}</span>
-    {!reducedMotion && <>
+  return <div className="effects-layer" aria-hidden="true">{pops.map(pop => <div key={pop.id} className={`pop-effect ${pop.points < 0 ? 'penalty-pop' : pop.points === 3 ? 'special-pop' : ''}`} style={{ left: `${pop.x * 100}%`, top: `${pop.y * 100}%` }}>
+    <span className="pop-points">{pop.points > 0 ? '+' : ''}{pop.points}</span>
+    {!reducedMotion && pop.points > 0 && <>
       {pop.points === 3 && <i className="shockwave" />}
       {Array.from({ length: pop.points === 3 ? 14 : 8 }, (_, i) => {
         const angle = i * 2.39996
