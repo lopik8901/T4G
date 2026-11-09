@@ -70,6 +70,7 @@ export function popBalloon(world: World, balloon: Balloon): number {
   return balloon.color === 0 ? 3 : 1
 }
 export function stepWorld(world: World, delta: number, settings: Settings, reducedMotion = false, aspectRatio = 1) {
+  let missedBalloons = 0
   const dt = Math.min(delta, 0.05)
   const previous = world.time
   world.time += dt
@@ -81,6 +82,10 @@ export function stepWorld(world: World, delta: number, settings: Settings, reduc
     // Use the shorter screen dimension so horizontal travel stays gentle on a TV.
     balloon.x += (balloon.vx * distance - balloon.vy * sway) * Math.min(1, 1 / aspectRatio)
     balloon.y += (balloon.vy * distance + balloon.vx * sway) * Math.min(1, aspectRatio)
-    if (balloon.x < -0.25 || balloon.x > 1.25 || balloon.y < -0.25 || balloon.y > 1.25) respawn(balloon)
+    if (balloon.x < -0.25 || balloon.x > 1.25 || balloon.y < -0.25 || balloon.y > 1.25) {
+      missedBalloons++
+      respawn(balloon)
+    }
   }
+  return missedBalloons
 }

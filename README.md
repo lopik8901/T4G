@@ -1,8 +1,23 @@
 # Balloon Pop
 
-A gentle AR magic mirror activity for elderly residents. The live webcam fills the play screen; residents pop glossy 3D balloons by reaching with either hand. Seated play, slow movements, and two residents are supported. No countdown, penalties, or game-over screen.
+A camera-based balloon game. The live webcam fills the play screen like a mirror. Move an open hand over a balloon, then close it into a fist to pop it. Seated play and two players are supported.
 
-Choose **Standard** or **Very fast** under **Game mode** on the setup screen or in **Staff controls**. Standard is the default and uses the former Lively speed. Very fast moves balloons **16 times faster**, so they cross the screen in a few seconds and are easy to miss. Missed balloons return without a score penalty. Staff can also use the balloon speed slider to set a custom speed.
+Choose a **Round type** and a **Pace** before starting:
+
+- **Standard (timed):** pop as many balloons as possible in 30, 60, or 90 seconds. The default is 60 seconds. Missing a balloon does not end the round.
+- **Endless:** there is no time limit. The first missed balloon ends the round.
+- **Pace:** Standard uses the former Lively speed. Very fast moves balloons 16 times faster, making them easy to miss. Either pace works with either round type. Staff can also set a custom speed.
+
+Each round starts with zero pops and points. A balloon is missed when it travels completely beyond the play area's outer margin. Results show **balloons popped**, **points**, **time played**, and your **best round this visit**. Best balloon totals are tracked separately for Endless and each timed duration, across all paces, and reset on page reload. Every balloon counts as one pop, including red balloons; red balloons award three points and the other colors award one. Choose **Play again** to start a fresh round with the same settings. Preview practice before starting does not count toward the round. Pausing, opening Staff controls, or switching browser tabs freezes the round and timer.
+
+## How to pop with your hand
+
+1. Show an open hand to the camera.
+2. Move the palm glow over a balloon.
+3. Close your hand into a fist. The glow turns gold.
+4. Open your hand again before popping the next balloon.
+
+An open hand cannot pop a balloon. Keeping a fist closed, moving a closed fist onto another balloon, or returning to view with an already closed fist cannot trigger another pop. One closure pops at most one balloon per hand. The thumb can remain outside the fist. Mouse clicks and keyboard pops are available only in the camera-free preview.
 
 ## Where to find things
 
@@ -13,12 +28,18 @@ src/                       The app's screen, appearance, and gameplay
   styles.css               Colors, spacing, and screen layouts
   camera/
     useMirror.ts           Camera access and hand-tracking connection
+    handGestures.ts        Recognizes open hands and closed fists
+    handGestures.test.ts   Checks fist detection and tracking tolerances
   components/
     SettingsPanel.tsx       Staff controls for speed, size, sound, and hands
+    RoundControls.tsx       Round type and time limit choices
+    RoundDisplay.tsx        Round progress, results, and replay buttons
   game/
     BalloonScene.tsx        Draws balloons and handles hand or tap contact
     logic.ts               Default settings, balloon movement, and scoring
     logic.test.ts          Checks the game rules and movement
+    round.ts               Round timer, balloon totals, and end conditions
+    round.test.ts          Checks timed and Endless round rules
     sound.ts               Balloon pop sounds
 public/                    Files the browser loads directly
   balloon.svg              Balloon logo
@@ -28,6 +49,7 @@ scripts/
   setup-assets.mjs         Prepares the local hand-tracking files
 tests/
   activity.spec.ts         Browser checks for the complete activity
+  rounds.spec.ts           Browser checks for round results and replay
 package.json               Dependencies and commands to run the project
 playwright.config.ts       Browser test settings
 vite.config.ts             Development server and build settings
@@ -50,8 +72,8 @@ The first install downloads dependencies and Google's versioned Hand Landmarker 
 
 1. Select **Enable camera**, then allow camera access in the browser.
 2. Wait for **Live mirror**. Confirm that residents and their hands are visible.
-3. Select **Start activity**. The mirror fills the window and the setup controls disappear.
-4. Reach naturally toward a balloon. Palm or fingertip contact pops it. Regular balloons score 1; red balloons score 3 with a gentle extra burst.
+3. Choose a round type, time limit (for timed rounds), and pace. Select **Start activity**. The mirror fills the window and the setup controls disappear.
+4. Move an open hand over a balloon and close it into a fist. Open your hand again for the next pop. Regular balloons score 1; red balloons score 3 with a gentle extra burst.
 5. Use **Pause** for a break or **Finish** to stop the webcam and return to setup.
 
 **Try a preview** uses clickable balloons without requesting a camera. It is clearly labeled and is useful for checking the interface. Balloon targets also work with Tab and Enter. This preview does not demonstrate hand detection.
@@ -64,15 +86,15 @@ Use a well-lit space with hands visible to the camera. The game starts at the st
 
 ## Staff controls
 
-- Game mode (**Standard** or **Very fast**), custom balloon speed, size, and number (3–6). Each balloon has its own speed and direction; the speed control adjusts them all together.
+- Pace (**Standard** or **Very fast**), custom balloon speed, size, and number (3–6). Each balloon has its own speed and direction; the speed control adjusts them all together. Round type and time limit are chosen on the setup screen.
 - Sound volume, including mute.
-- Touch sensitivity: higher values enlarge collision zones.
+- Grab sensitivity: higher values enlarge the area where a fist closure counts.
 - Optional glow around detected palms.
 - **2 hands** by default for predictable performance; **4 hands** can be selected before connecting the camera for two residents.
-- Reset the current score while retaining the highest score in this page session.
+- **Reset round** clears the current score, round timer, and balloon totals while retaining completed-round records and the highest points total in this page session.
 - Fullscreen, pause, resume, and finish.
 
-Opening settings during play pauses the activity. Close settings and choose **Continue playing** to resume. Switching away from the browser tab also pauses play. Balloons drift horizontally, vertically, and at gentle diagonals. Popped balloons return after a 1.2-second delay from a randomly selected screen edge, with a fresh direction and speed; missed balloons recycle the same way. Reduced-motion preferences remove nonessential swaying and particles; gentle travel is retained as part of the activity.
+Opening settings during play pauses the activity. Close settings and choose **Continue playing** to resume. Switching away from the browser tab also pauses play. Balloons travel horizontally, vertically, and diagonally. Popped balloons return after a 1.2-second delay from a randomly selected screen edge, with a fresh direction and speed. Missed balloons return during timed rounds; in Endless, the first miss ends play. Reduced-motion preferences remove nonessential swaying and particles; balloon travel remains part of the game.
 
 ## Privacy and implementation
 
@@ -80,12 +102,14 @@ React + Vite + TypeScript, Tailwind CSS, Three.js through React Three Fiber and 
 
 The browser requests **video only**, never microphone access. Camera frames are transferred to a local worker for inference and closed after processing. They are never uploaded or persisted. The score is held in memory and resets on page reload. Finishing the activity stops all camera tracks and terminates the worker.
 
-Video uses a horizontal mirror with `object-fit: cover`. Hand coordinates use the same crop and mirror transform, recalculated from the video and viewport dimensions. Collision checks include palm centers and all five fingertips, smooth nearby tracks, and discard stale detections. Rendering uses its own animation loop; inference is limited to approximately 12.5 requests per second with only one frame in flight. Pop handling marks a balloon unavailable before scoring so simultaneous contacts cannot double-count it. Three.js resources are disposed by React Three Fiber when unmounted.
+Video uses a horizontal mirror with `object-fit: cover`. The palm glow uses the same crop and mirror transform, recalculated from the video and viewport dimensions. Nearby hand tracks are matched and their palm positions smoothed. Fist detection compares each fingertip's distance from the wrist with its middle joint's distance, accounting for video proportions and landmark depth. At least three fingers must curl. Separate opening and closing thresholds reduce repeated grabs from small tracking fluctuations. Only a fresh open-to-closed transition can pop the nearest overlapping balloon. Stale or newly reacquired detections cannot trigger a pop.
+
+Rendering uses its own animation loop; inference is limited to approximately 12.5 requests per second with only one frame in flight. The round timer uses active elapsed time independently of movement's frame-jump limit. Pop handling marks a balloon unavailable before scoring so simultaneous contacts cannot double-count it. Three.js resources are disposed by React Three Fiber when unmounted.
 
 ## Checks
 
 ```sh
-npm test                 # Mirror mapping, collisions, scoring, respawning
+npm test                 # Movement, scoring, fist detection, and round rules
 npm run build            # TypeScript check and production bundle
 npm run preview          # Serve the production build locally
 ```
@@ -96,13 +120,15 @@ Browser checks use Playwright with an installed Google Chrome and a synthetic ca
 npx playwright test
 ```
 
-They cover setup, responsive overflow, accessibility, preview scoring, staff controls, pause/resume, fullscreen, permission denial, local worker inference, camera cleanup, mapped palm contact, and hand loss. Screenshots are saved in `artifacts/`. Contact and reconnection use controlled landmarks and a canvas video stream. Chrome's fake device disappeared from device enumeration after shutdown in this environment, including for direct browser calls, so physical camera reconnection remains a manual check. Synthetic checks do not establish real-hand detection accuracy or performance on every laptop.
+They cover setup, responsive overflow, accessibility, preview scoring, staff controls, pause/resume, fullscreen, permission denial, local worker inference, camera cleanup, deliberate hand closures, hand loss, timed results, Endless losses, and replay. Screenshots are saved in `artifacts/`. Gesture and reconnection checks use controlled landmarks and a canvas video stream. Physical camera reconnection and natural fist recognition remain manual checks. Synthetic checks do not establish real-hand detection accuracy or performance on every laptop.
 
 Before using the activity with residents, check on the actual laptop and TV:
 
 - The live image appears immediately after camera permission and behaves like a mirror.
 - A raised hand's glow aligns with its palm, including near the left and right edges.
-- Slow palm and fingertip contact pop balloons; red gives 3 and other colors give 1.
+- An open palm over a balloon does not pop it. Closing into a fist does; red gives 3 points and other colors give 1.
+- Holding a fist or moving it onto a different balloon does not trigger another pop. Opening and closing again does.
+- Timed play stops at the selected limit. Endless ends on the first missed balloon. Play again clears the timer and totals.
 - Hands can leave and re-enter the image without a stuck marker or score changes.
 - Balloon speed, size, sensitivity, volume, pause, and fullscreen suit the space.
 - Four-hand mode remains responsive on the chosen laptop; use two hands if needed.

@@ -9,6 +9,7 @@ export type Pop = { id: number; x: number; y: number; points: number; color: str
 type Props = {
   world: RefObject<World>; hands: RefObject<HandFrame>; settings: Settings
   playing: boolean; preview: boolean; reducedMotion: boolean; onPop: (pop: Pop) => void
+  onStep?: (seconds: number, missedBalloons: number) => boolean
 }
 
 class SceneBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
@@ -67,6 +68,10 @@ function HandRing({ index, hands }: { index: number; hands: RefObject<HandFrame>
     if (!hand) return
     const point = mapToMirror(hand.center, frame.width, frame.height, size.width, size.height)
     ring.current.position.set((point.x - 0.5) * size.width, (0.5 - point.y) * size.height, 120)
+    for (const child of ring.current.children) {
+      const material = (child as THREE.Mesh).material as THREE.MeshBasicMaterial
+      material.color.set(hand.closed ? '#ffd46b' : '#e9ffd0')
+    }
   })
   return <group ref={ring}>
     <mesh><ringGeometry args={[23, 27, 48]} /><meshBasicMaterial color="#e9ffd0" transparent opacity={0.85} depthTest={false} /></mesh>
@@ -78,28 +83,48 @@ function Scene(props: Props & { targets: RefObject<(HTMLButtonElement | null)[]>
   const { world, hands, settings, playing, preview, reducedMotion, onPop } = props
   const { size } = useThree()
   const radius = balloonRadius(size.width, size.height, settings.size)
+  const lastHandFrame = useRef(0)
+  const wasPlaying = useRef(playing)
   useFrame((_, delta) => {
-    if (playing) stepWorld(world.current, delta, settings, reducedMotion, size.width / size.height)
+    const justStarted = playing && !wasPlaying.current
+    wasPlaying.current = playing
+    const frame = hands.current
+    const newHandFrame = frame.time !== lastHandFrame.current
+    // Consume frames while paused too, so a paused grab cannot pop on resume.
+    lastHandFrame.current = frame.time
+
+    let active = playing
+    if (active) {
+      const missedBalloons = stepWorld(world.current, delta, settings, reducedMotion, size.width / size.height)
+      // The clock uses real active time; movement separately caps large frame jumps.
+      if (props.onStep?.(delta, missedBalloons)) active = false
+    }
     world.current.balloons.forEach((balloon, i) => {
       const target = props.targets.current[i]
       if (!target) return
-      target.style.display = playing && i < settings.count && balloon.readyAt <= world.current.time && balloon.x > 0 && balloon.x < 1 && balloon.y > 0 && balloon.y < 1 ? 'block' : 'none'
+      target.style.display = active && i < settings.count && balloon.readyAt <= world.current.time && balloon.x > 0 && balloon.x < 1 && balloon.y > 0 && balloon.y < 1 ? 'block' : 'none'
       target.style.left = `${balloon.x * 100}%`
       target.style.top = `${balloon.y * 100}%`
       target.style.width = `${radius * 2}px`
       target.style.height = `${radius * 2.48}px`
       target.setAttribute('aria-label', `Pop ${colorNames[balloon.color]} balloon (+${balloon.color === 0 ? 3 : 1})`)
     })
-    if (!playing || preview || performance.now() - hands.current.time > 280) return
-    const frame = hands.current
-    const points = frame.hands.flatMap(hand => hand.points.map(point => mapToMirror(point, frame.width, frame.height, size.width, size.height)))
-      .filter(point => point.x >= 0 && point.x <= 1 && point.y >= 0 && point.y <= 1)
-    for (const balloon of world.current.balloons.slice(0, settings.count)) {
-      if (balloon.readyAt > world.current.time) continue
-      if (points.some(point => overlaps(point, balloon, radius, size.width, size.height, settings.sensitivity))) {
-        const score = popBalloon(world.current, balloon)
-        if (score) onPop({ id: performance.now() + balloon.id, x: balloon.x, y: balloon.y, points: score, color: colors[balloon.color] })
-      }
+    if (!active || justStarted || preview || !newHandFrame || performance.now() - frame.time > 280) return
+    for (const hand of frame.hands) {
+      if (!hand.justClosed) continue
+      const point = mapToMirror(hand.center, frame.width, frame.height, size.width, size.height)
+      if (point.x < 0 || point.x > 1 || point.y < 0 || point.y > 1) continue
+
+      // One closure pops only the nearest overlapping balloon.
+      const balloon = world.current.balloons.slice(0, settings.count)
+        .filter(balloon => balloon.readyAt <= world.current.time && overlaps(point, balloon, radius, size.width, size.height, settings.sensitivity))
+        .sort((first, second) => (
+          Math.hypot((first.x - point.x) * size.width, (first.y - point.y) * size.height)
+          - Math.hypot((second.x - point.x) * size.width, (second.y - point.y) * size.height)
+        ))[0]
+      if (!balloon) continue
+      const score = popBalloon(world.current, balloon)
+      if (score) onPop({ id: performance.now() + balloon.id, x: balloon.x, y: balloon.y, points: score, color: colors[balloon.color] })
     }
   }, -1)
   return <>
@@ -115,14 +140,14 @@ function Scene(props: Props & { targets: RefObject<(HTMLButtonElement | null)[]>
 export function BalloonScene(props: Props) {
   const targets = useRef<(HTMLButtonElement | null)[]>([])
   const pop = (index: number) => {
-    if (!props.playing) return
+    if (!props.playing || !props.preview) return
     const balloon = props.world.current.balloons[index]
     const points = popBalloon(props.world.current, balloon)
     if (points) props.onPop({ id: performance.now() + balloon.id, x: balloon.x, y: balloon.y, points, color: colors[balloon.color] })
   }
   return <SceneBoundary><Canvas className="balloon-canvas" dpr={[1, 1.5]} gl={{ alpha: true, antialias: true }} fallback={<div className="graphics-error">This game needs WebGL. Please use Chrome or Edge with hardware acceleration enabled.</div>}>
     <Scene {...props} targets={targets} />
-  </Canvas><div className="balloon-targets">{Array.from({ length: props.settings.count }, (_, i) => <button key={i} ref={node => { targets.current[i] = node }} className="balloon-hit" style={{ display: 'none' }} onClick={() => pop(i)} aria-label={`Pop ${colorNames[i % 5]} balloon`} />)}</div></SceneBoundary>
+  </Canvas><div className="balloon-targets" aria-hidden={!props.preview}>{Array.from({ length: props.settings.count }, (_, i) => <button key={i} ref={node => { targets.current[i] = node }} className="balloon-hit" style={{ display: 'none' }} disabled={!props.preview} onClick={() => pop(i)} aria-label={`Pop ${colorNames[i % 5]} balloon`} />)}</div></SceneBoundary>
 }
 
 export function PopEffects({ pops, reducedMotion }: { pops: Pop[]; reducedMotion: boolean }) {

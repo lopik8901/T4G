@@ -25,7 +25,7 @@ test('popped balloons enter from all four edges and travel into the play area', 
     const world = createWorld()
     const balloon = world.balloons[0]
     popBalloon(world, balloon)
-    for (let i = 0; i < 23; i++) stepWorld(world, 0.05, defaultSettings)
+    for (let i = 0; i < 23; i++) assert.equal(stepWorld(world, 0.05, defaultSettings), 0, 'popped balloons are not misses')
     assert.ok(balloon.readyAt > world.time, 'replacement waits for its cooldown')
     for (let i = 0; i < 2; i++) stepWorld(world, 0.05, defaultSettings)
     assert.equal(balloon.readyAt, 0)
@@ -43,7 +43,7 @@ test('missed balloons recycle after leaving any edge', context => {
   for (const outside of [{ x: -0.26, y: 0.5 }, { x: 1.26, y: 0.5 }, { x: 0.5, y: -0.26 }, { x: 0.5, y: 1.26 }]) {
     const world = createWorld()
     const balloon = Object.assign(world.balloons[0], outside)
-    stepWorld(world, 0.016, defaultSettings)
+    assert.equal(stepWorld(world, 0.016, defaultSettings), 1, 'an escaped balloon counts as one miss')
     assert.ok(balloon.x >= -0.15 && balloon.x <= 1.15 && balloon.y >= -0.15 && balloon.y <= 1.15)
     assert.equal(balloon.readyAt, 0)
   }

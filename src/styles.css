@@ -156,6 +156,36 @@ footer .text-button { font-size: 11px; }
 .pause-overlay h2 { font-size: 44px; letter-spacing: -1px; }
 .pause-overlay p { font-size: 16px; color: var(--muted); margin: 14px 0 24px; }
 .pause-overlay .text-button { margin-top: 12px; }
+
+/* Round progress stays separate from the points display and hand instructions. */
+.round-status {
+  position: absolute;
+  top: 80px;
+  left: 28px;
+  z-index: 12;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-width: calc(100% - 220px);
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #fffef5f5;
+  color: var(--forest);
+  pointer-events: none;
+  font-size: 13px;
+}
+.round-status strong { font-size: 20px; }
+.round-results { overflow-y: auto; }
+.round-results p { max-width: 460px; }
+.round-totals { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+.round-totals dt { font-size: 14px; color: var(--muted); }
+.round-totals dd { margin: 4px 0 0; font-size: 36px; font-weight: 800; color: var(--forest); }
+
+@media (max-width: 520px) {
+  .round-status { top: 150px; left: 16px; max-width: calc(100% - 32px); font-size: 12px; }
+  .round-status strong { font-size: 18px; }
+  .round-totals { gap: 14px; }
+}
 dialog { border: 1px solid #dce3d9; border-radius: 22px; padding: 0; margin: auto; color: var(--ink); background: var(--surface); width: min(440px, calc(100% - 32px)); max-height: calc(100dvh - 40px); box-shadow: 0 20px 100px #12251f30; }
 dialog::backdrop { background: #152c2466; backdrop-filter: blur(4px); }
 .dialog-content { padding: 24px 28px 28px; }
