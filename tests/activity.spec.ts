@@ -130,7 +130,7 @@ test('staff controls are keyboard accessible with reduced motion', async ({ page
   await expect(page.getByRole('dialog', { name: 'Staff controls' })).not.toBeVisible()
 })
 
-test('only a fresh hand closure pops a balloon, including after hand loss', async ({ page }) => {
+test('hand-circle contact pops balloons automatically and works again after hand loss', async ({ page }) => {
   // The real model is covered above; controlled landmarks make contact reproducible.
   await page.addInitScript(() => {
     navigator.mediaDevices.getUserMedia = async () => {
@@ -146,17 +146,6 @@ test('only a fresh hand closure pops a balloon, including after hand loss', asyn
       track.stop = () => { clearInterval(timer); stop() }
       return stream
     }
-    function makeHand(point: { x: number; y: number; closed: boolean }) {
-      const hand = Array.from({ length: 21 }, () => ({ x: point.x, y: point.y }))
-      hand[0] = { x: point.x, y: point.y + 0.08 }
-      for (const [finger, base] of [5, 9, 13, 17].entries()) {
-        const x = point.x + (finger - 1.5) * 0.03
-        hand[base] = { x, y: point.y - 0.02 }
-        hand[base + 1] = { x, y: point.y - 0.05 }
-        hand[base + 3] = { x, y: point.y + (point.closed ? 0.025 : -0.12) }
-      }
-      return hand
-    }
     const cameraWorker = class extends EventTarget {
       onmessage: ((event: MessageEvent) => void) | null = null
       postMessage(data: { type: string; time: number; frame?: ImageBitmap }) {
@@ -164,7 +153,7 @@ test('only a fresh hand closure pops a balloon, including after hand loss', asyn
         else {
           data.frame?.close()
           const point = Reflect.get(window, 'testHand')
-          this.onmessage?.(new MessageEvent('message', { data: { type: 'hands', hands: point ? [makeHand(point)] : [], time: data.time } }))
+          this.onmessage?.(new MessageEvent('message', { data: { type: 'hands', hands: point ? [Array.from({ length: 21 }, () => point)] : [], time: data.time } }))
         }
       }
       terminate() {}
@@ -175,10 +164,10 @@ test('only a fresh hand closure pops a balloon, including after hand loss', asyn
   await page.getByRole('button', { name: 'Enable camera', exact: true }).click()
   await expect(page.locator('.status-pill')).toContainText('Live mirror')
   await page.getByRole('button', { name: 'Start activity', exact: true }).click()
-  const positionHand = async (index: number, closed: boolean) => {
+  const positionHand = async (index: number) => {
     const balloon = page.locator('.balloon-hit').nth(index)
     await expect(balloon).toBeVisible()
-    await balloon.evaluate((target, closed) => {
+    await balloon.evaluate(target => {
       const rect = target.getBoundingClientRect()
       const video = document.querySelector('video')!
       const scale = Math.max(innerWidth / video.videoWidth, innerHeight / video.videoHeight)
@@ -187,36 +176,31 @@ test('only a fresh hand closure pops a balloon, including after hand loss', asyn
       Reflect.set(window, 'testHand', {
         x: ((1 - x) * innerWidth + (video.videoWidth * scale - innerWidth) / 2) / (video.videoWidth * scale),
         y: (y * innerHeight + (video.videoHeight * scale - innerHeight) / 2) / (video.videoHeight * scale),
-        closed,
       })
-    }, closed)
+    })
   }
 
-  await positionHand(0, false)
-  await expect(page.locator('.stage-hint')).toContainText('then close it')
-  await page.waitForTimeout(500)
-  await expect(page.locator('.score-display strong')).toHaveText('0')
-  // Live play cannot bypass the gesture through a mouse or keyboard click.
+  // Live play uses the hand circle; direct clicks remain preview-only.
   await expect(page.locator('.balloon-hit').first()).toBeDisabled()
-  await positionHand(0, true)
+  await positionHand(0)
+  await expect(page.locator('.stage-hint')).toContainText('hand circle')
   await expect(page.locator('.score-display strong')).toHaveText('3')
   await expect(page.locator('.round-status strong')).toHaveText('1 balloon popped')
 
-  await positionHand(1, true)
+  await positionHand(1)
+  await expect(page.locator('.score-display strong')).toHaveText('4')
   await page.waitForTimeout(500)
-  await expect(page.locator('.score-display strong')).toHaveText('3')
-  await positionHand(1, false)
-  await page.waitForTimeout(250)
-  await positionHand(1, true)
   await expect(page.locator('.score-display strong')).toHaveText('4')
 
   await page.evaluate(() => Reflect.set(window, 'testHand', null))
   await expect(page.locator('.stage-hint')).toHaveText('Lift a hand whenever you’re ready')
-  await positionHand(2, true)
   await page.waitForTimeout(500)
   await expect(page.locator('.score-display strong')).toHaveText('4')
+  await positionHand(2)
+  await expect(page.locator('.score-display strong')).toHaveText('5')
   await page.getByRole('button', { name: 'Pause', exact: true }).click()
-  await expect(page.locator('.score-display strong')).toHaveText('4')
+  await page.waitForTimeout(500)
+  await expect(page.locator('.score-display strong')).toHaveText('5')
   await page.getByRole('button', { name: 'Finish', exact: true }).click()
   await page.getByRole('button', { name: 'Enable camera', exact: true }).click()
   await expect(page.locator('.status-pill')).toContainText('Live mirror')

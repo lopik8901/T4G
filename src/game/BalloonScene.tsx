@@ -68,10 +68,6 @@ function HandRing({ index, hands }: { index: number; hands: RefObject<HandFrame>
     if (!hand) return
     const point = mapToMirror(hand.center, frame.width, frame.height, size.width, size.height)
     ring.current.position.set((point.x - 0.5) * size.width, (0.5 - point.y) * size.height, 120)
-    for (const child of ring.current.children) {
-      const material = (child as THREE.Mesh).material as THREE.MeshBasicMaterial
-      material.color.set(hand.closed ? '#ffd46b' : '#e9ffd0')
-    }
   })
   return <group ref={ring}>
     <mesh><ringGeometry args={[23, 27, 48]} /><meshBasicMaterial color="#e9ffd0" transparent opacity={0.85} depthTest={false} /></mesh>
@@ -83,15 +79,8 @@ function Scene(props: Props & { targets: RefObject<(HTMLButtonElement | null)[]>
   const { world, hands, settings, playing, preview, reducedMotion, onPop } = props
   const { size } = useThree()
   const radius = balloonRadius(size.width, size.height, settings.size)
-  const lastHandFrame = useRef(0)
-  const wasPlaying = useRef(playing)
   useFrame((_, delta) => {
-    const justStarted = playing && !wasPlaying.current
-    wasPlaying.current = playing
     const frame = hands.current
-    const newHandFrame = frame.time !== lastHandFrame.current
-    // Consume frames while paused too, so a paused grab cannot pop on resume.
-    lastHandFrame.current = frame.time
 
     let active = playing
     if (active) {
@@ -109,22 +98,22 @@ function Scene(props: Props & { targets: RefObject<(HTMLButtonElement | null)[]>
       target.style.height = `${radius * 2.48}px`
       target.setAttribute('aria-label', `Pop ${colorNames[balloon.color]} balloon (+${balloon.color === 0 ? 3 : 1})`)
     })
-    if (!active || justStarted || preview || !newHandFrame || performance.now() - frame.time > 280) return
-    for (const hand of frame.hands) {
-      if (!hand.justClosed) continue
-      const point = mapToMirror(hand.center, frame.width, frame.height, size.width, size.height)
-      if (point.x < 0 || point.x > 1 || point.y < 0 || point.y > 1) continue
+    if (!active || preview || performance.now() - frame.time > 280) return
 
-      // One closure pops only the nearest overlapping balloon.
-      const balloon = world.current.balloons.slice(0, settings.count)
-        .filter(balloon => balloon.readyAt <= world.current.time && overlaps(point, balloon, radius, size.width, size.height, settings.sensitivity))
-        .sort((first, second) => (
-          Math.hypot((first.x - point.x) * size.width, (first.y - point.y) * size.height)
-          - Math.hypot((second.x - point.x) * size.width, (second.y - point.y) * size.height)
-        ))[0]
-      if (!balloon) continue
-      const score = popBalloon(world.current, balloon)
-      if (score) onPop({ id: performance.now() + balloon.id, x: balloon.x, y: balloon.y, points: score, color: colors[balloon.color] })
+    const handCircles = frame.hands
+      .map(hand => mapToMirror(hand.center, frame.width, frame.height, size.width, size.height))
+      .filter(point => point.x >= 0 && point.x <= 1 && point.y >= 0 && point.y <= 1)
+
+    // Any tracked hand circle can pop a balloon simply by overlapping it.
+    for (const balloon of world.current.balloons.slice(0, settings.count)) {
+      if (balloon.readyAt > world.current.time) continue
+      const touching = handCircles.some(point => (
+        overlaps(point, balloon, radius, size.width, size.height, settings.sensitivity)
+      ))
+      if (!touching) continue
+
+      const points = popBalloon(world.current, balloon)
+      if (points) onPop({ id: performance.now() + balloon.id, x: balloon.x, y: balloon.y, points, color: colors[balloon.color] })
     }
   }, -1)
   return <>

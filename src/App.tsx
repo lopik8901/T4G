@@ -126,7 +126,7 @@ export default function App() {
     </header>
 
     <main>
-      <section className="page-intro"><div><p className="eyebrow"><Sparkles size={16} aria-hidden="true" /> A LITTLE EVERYDAY MAGIC</p><h1>A little movement. <em>A lot of joy.</em></h1></div><p>Move over a balloon, then close your hand.<br />How many can you pop this round?</p></section>
+      <section className="page-intro"><div><p className="eyebrow"><Sparkles size={16} aria-hidden="true" /> A LITTLE EVERYDAY MAGIC</p><h1>A little movement. <em>A lot of joy.</em></h1></div><p>Move your hand circle over a balloon to pop it.<br />How many can you pop this round?</p></section>
       <div className="activity-layout">
         <section className={`mirror-stage ${mirror.cameraOn ? 'camera-on' : ''} ${preview ? 'preview-mode' : ''}`} aria-label="Balloon activity">
           <video ref={mirror.videoRef} className="mirror-video" autoPlay muted playsInline aria-label="Live mirrored camera" style={{ visibility: mirror.cameraOn ? 'visible' : 'hidden' }} />
@@ -173,7 +173,7 @@ export default function App() {
           {session === 'paused' && <div className="pause-overlay"><span className="pause-emblem"><Pause size={28} /></span><h2>Take your time.</h2><p>We’ll be right here when you’re ready.</p><button className="primary-button" onClick={start} disabled={!ready}><Play size={18} fill="currentColor" /> Continue playing</button><button className="text-button" onClick={end}><ArrowLeft size={16} /> Back to setup</button></div>}
 
           <div className="stage-bottom">
-            <span className="stage-hint">{preview ? <><Hand size={18} /> Tap a balloon to try it</> : mirror.status === 'ready' ? <><Hand size={18} /> {mirror.handCount ? 'Move an open hand over a balloon, then close it' : 'Lift a hand whenever you’re ready'}</> : <><Heart size={16} /> A little reach goes a long way.</>}</span>
+            <span className="stage-hint">{preview ? <><Hand size={18} /> Tap a balloon to try it</> : mirror.status === 'ready' ? <><Hand size={18} /> {mirror.handCount ? 'Move your hand circle over a balloon to pop it' : 'Lift a hand whenever you’re ready'}</> : <><Heart size={16} /> A little reach goes a long way.</>}</span>
             <div className="stage-actions">{preview && !immersive && <button className="icon-button" onClick={() => setPreviewMoving(value => !value)} aria-label={previewMoving ? 'Pause preview' : 'Resume preview'}>{previewMoving ? <Pause size={18} /> : <Play size={18} />}</button>}<button className="icon-button" onClick={() => setSettings(value => ({ ...value, volume: value.volume ? 0 : 0.3 }))} aria-label={settings.volume ? 'Mute sound' : 'Enable sound'}>{settings.volume ? <Volume2 size={19} /> : <VolumeX size={19} />}</button><button className="icon-button" onClick={fullscreen} aria-label="Toggle fullscreen"><Maximize size={18} /></button></div>
           </div>
           {immersive && session !== 'finished' && <div className="play-controls"><button className="hud-button" onClick={() => setSession(value => value === 'paused' ? 'playing' : 'paused')} disabled={!ready}>{session === 'playing' ? <Pause size={19} /> : <Play size={19} />}{session === 'playing' ? 'Pause' : 'Resume'}</button><button className="hud-button" onClick={openSettings}><SlidersHorizontal size={19} /> Settings</button><button className="hud-button" onClick={end}><X size={19} /> Finish</button></div>}
@@ -183,8 +183,8 @@ export default function App() {
           <div className="panel-title"><span className="eyebrow"><Leaf size={16} /> AT YOUR OWN PACE</span><h2>Ready, set… relax.</h2><p>A feel-good activity for one or two.<br />Sitting or standing, everyone is welcome.</p></div>
           <ol className="how-steps">
             <li><span>1</span><div><strong>Choose your round</strong><p>Beat the clock, or keep going until you miss.</p></div></li>
-            <li><span>2</span><div><strong>Move over a balloon</strong><p>Keep your hand open while you line up your palm.</p></div></li>
-            <li><span>3</span><div><strong>Close your hand to pop</strong><p>Make a fist, then open your hand for the next balloon.</p></div></li>
+            <li><span>2</span><div><strong>Raise either hand</strong><p>A circle follows your palm on screen.</p></div></li>
+            <li><span>3</span><div><strong>Touch a balloon with the circle</strong><p>It pops automatically. Reach for the next one!</p></div></li>
           </ol>
           <div className="quick-settings">
             <div className="section-label">
@@ -252,12 +252,12 @@ export default function App() {
         </div>
         <h2 id="help-title">A little help getting started.</h2>
         <p>Enable the camera and allow access when your browser asks. Sit or stand where you can comfortably see yourself, then start the activity.</p>
-        <h3>Close your hand to pop</h3>
-        <p>Move an open hand until the palm glow overlaps a balloon, then close your hand into a fist. The glow turns gold when your hand is closed. Open your hand again before the next pop. Holding a fist or raising an open hand will not pop balloons.</p>
+        <h3>Move your hand circle to pop</h3>
+        <p>Raise either hand and move the circle over a balloon. It pops automatically when the circle touches it. You can keep your hand open and move straight to the next balloon.</p>
         <h3>Choose your challenge</h3>
         <p>Standard timed rounds give you 30, 60, or 90 seconds to pop as many balloons as possible. Endless rounds end as soon as one balloon gets away. Choose Standard or Very fast pace for either round type. Each balloon counts as one pop; red balloons give three points.</p>
         <h3>Make it comfortable</h3>
-        <p>Staff controls let you make balloons larger, slow them down, lower the volume, and make grabs easier. Pause for a break at any time.</p>
+        <p>Staff controls let you make balloons larger, slow them down, lower the volume, and make touches easier. Pause for a break at any time.</p>
         <h3>Playing together on a TV</h3>
         <p>Connect your laptop to the TV with HDMI. Duplicate the display, keep the webcam facing the residents, and select Fullscreen. Use a well-lit space and keep hands in view. For two residents, choose 4 hands in Staff controls before enabling the camera.</p>
         <div className="privacy-note"><ShieldCheck size={21} /><p>Video is processed on this laptop. It is never recorded, stored, or uploaded.</p></div>

@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { Point } from '../game/logic'
-import { isHandClosed, type HandLandmark } from './handGestures'
 
-export type TrackedHand = { center: Point; closed: boolean; justClosed: boolean }
+export type TrackedHand = { center: Point }
 export type HandFrame = { hands: TrackedHand[]; time: number; width: number; height: number }
 export type CameraStatus = 'off' | 'requesting' | 'loading' | 'ready' | 'error'
 
@@ -80,20 +79,14 @@ export function useMirror(handLimit: number) {
           busy = false
           const previous = frameRef.current
           const available = new Set(previous.hands)
-          const hands: TrackedHand[] = data.hands.map((landmarks: HandLandmark[]) => {
+          const hands: TrackedHand[] = data.hands.map((landmarks: Point[]) => {
             const palm = [0, 5, 9, 13, 17].map(i => landmarks[i])
             const center = { x: palm.reduce((sum, p) => sum + p.x, 0) / 5, y: palm.reduce((sum, p) => sum + p.y, 0) / 5 }
             const closest = [...available].sort((a, b) => Math.hypot(a.center.x - center.x, a.center.y - center.y) - Math.hypot(b.center.x - center.x, b.center.y - center.y))[0]
             const old = closest && performance.now() - previous.time < 250 && Math.hypot(closest.center.x - center.x, closest.center.y - center.y) < 0.2 ? closest : undefined
             if (old) available.delete(old)
             const smooth = (p: Point, before?: Point): Point => before ? { x: before.x * 0.3 + p.x * 0.7, y: before.y * 0.3 + p.y * 0.7 } : p
-            const closed = isHandClosed(landmarks, video.videoWidth / video.videoHeight, old?.closed)
-            return {
-              center: smooth(center, old?.center),
-              closed,
-              // A newly detected fist must open first; reappearing hands cannot auto-pop.
-              justClosed: !!old && !old.closed && closed,
-            }
+            return { center: smooth(center, old?.center) }
           })
           frameRef.current = { hands, time: data.time, width: video.videoWidth, height: video.videoHeight }
           setHandCount(hands.length)
