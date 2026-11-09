@@ -1,0 +1,824 @@
+{
+  "source": "Human recordings required; none supplied. Obtain speaker consent and licence before bundling.",
+  "recordings": [
+    {
+      "language": "en",
+      "id": "find:animals:dog",
+      "text": "Find the dog!",
+      "file": "recordings/en/find-animals-dog.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:cat",
+      "text": "Find the cat!",
+      "file": "recordings/en/find-animals-cat.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:rabbit",
+      "text": "Find the rabbit!",
+      "file": "recordings/en/find-animals-rabbit.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:bird",
+      "text": "Find the sparrow!",
+      "file": "recordings/en/find-animals-bird.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:fish",
+      "text": "Find the goldfish!",
+      "file": "recordings/en/find-animals-fish.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:butterfly",
+      "text": "Find the butterfly!",
+      "file": "recordings/en/find-animals-butterfly.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:cow",
+      "text": "Find the cow!",
+      "file": "recordings/en/find-animals-cow.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:pig",
+      "text": "Find the pig!",
+      "file": "recordings/en/find-animals-pig.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:horse",
+      "text": "Find the horse!",
+      "file": "recordings/en/find-animals-horse.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:sheep",
+      "text": "Find the sheep!",
+      "file": "recordings/en/find-animals-sheep.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:goat",
+      "text": "Find the goat!",
+      "file": "recordings/en/find-animals-goat.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:chicken",
+      "text": "Find the chicken!",
+      "file": "recordings/en/find-animals-chicken.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:duck",
+      "text": "Find the duck!",
+      "file": "recordings/en/find-animals-duck.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:goose",
+      "text": "Find the goose!",
+      "file": "recordings/en/find-animals-goose.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:turkey",
+      "text": "Find the turkey!",
+      "file": "recordings/en/find-animals-turkey.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:pigeon",
+      "text": "Find the pigeon!",
+      "file": "recordings/en/find-animals-pigeon.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:parrot",
+      "text": "Find the parrot!",
+      "file": "recordings/en/find-animals-parrot.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:owl",
+      "text": "Find the owl!",
+      "file": "recordings/en/find-animals-owl.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:eagle",
+      "text": "Find the eagle!",
+      "file": "recordings/en/find-animals-eagle.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:penguin",
+      "text": "Find the penguin!",
+      "file": "recordings/en/find-animals-penguin.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:peacock",
+      "text": "Find the peacock!",
+      "file": "recordings/en/find-animals-peacock.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:flamingo",
+      "text": "Find the flamingo!",
+      "file": "recordings/en/find-animals-flamingo.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:swan",
+      "text": "Find the swan!",
+      "file": "recordings/en/find-animals-swan.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:ostrich",
+      "text": "Find the ostrich!",
+      "file": "recordings/en/find-animals-ostrich.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:turtle",
+      "text": "Find the turtle!",
+      "file": "recordings/en/find-animals-turtle.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:crocodile",
+      "text": "Find the crocodile!",
+      "file": "recordings/en/find-animals-crocodile.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:snake",
+      "text": "Find the snake!",
+      "file": "recordings/en/find-animals-snake.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:frog",
+      "text": "Find the frog!",
+      "file": "recordings/en/find-animals-frog.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:lizard",
+      "text": "Find the lizard!",
+      "file": "recordings/en/find-animals-lizard.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:lion",
+      "text": "Find the lion!",
+      "file": "recordings/en/find-animals-lion.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:tiger",
+      "text": "Find the tiger!",
+      "file": "recordings/en/find-animals-tiger.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:elephant",
+      "text": "Find the elephant!",
+      "file": "recordings/en/find-animals-elephant.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:giraffe",
+      "text": "Find the giraffe!",
+      "file": "recordings/en/find-animals-giraffe.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:zebra",
+      "text": "Find the zebra!",
+      "file": "recordings/en/find-animals-zebra.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:monkey",
+      "text": "Find the monkey!",
+      "file": "recordings/en/find-animals-monkey.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:gorilla",
+      "text": "Find the gorilla!",
+      "file": "recordings/en/find-animals-gorilla.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:panda",
+      "text": "Find the giant panda!",
+      "file": "recordings/en/find-animals-panda.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:bear",
+      "text": "Find the bear!",
+      "file": "recordings/en/find-animals-bear.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:kangaroo",
+      "text": "Find the kangaroo!",
+      "file": "recordings/en/find-animals-kangaroo.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:koala",
+      "text": "Find the koala!",
+      "file": "recordings/en/find-animals-koala.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:squirrel",
+      "text": "Find the squirrel!",
+      "file": "recordings/en/find-animals-squirrel.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:mouse",
+      "text": "Find the mouse!",
+      "file": "recordings/en/find-animals-mouse.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:hamster",
+      "text": "Find the hamster!",
+      "file": "recordings/en/find-animals-hamster.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:hedgehog",
+      "text": "Find the hedgehog!",
+      "file": "recordings/en/find-animals-hedgehog.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:deer",
+      "text": "Find the deer!",
+      "file": "recordings/en/find-animals-deer.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:camel",
+      "text": "Find the camel!",
+      "file": "recordings/en/find-animals-camel.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:dolphin",
+      "text": "Find the dolphin!",
+      "file": "recordings/en/find-animals-dolphin.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:whale",
+      "text": "Find the whale!",
+      "file": "recordings/en/find-animals-whale.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:seal",
+      "text": "Find the seal!",
+      "file": "recordings/en/find-animals-seal.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:animals:octopus",
+      "text": "Find the octopus!",
+      "file": "recordings/en/find-animals-octopus.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:apple",
+      "text": "Find the apple!",
+      "file": "recordings/en/find-fruits-apple.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:banana",
+      "text": "Find the banana!",
+      "file": "recordings/en/find-fruits-banana.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:orange",
+      "text": "Find the orange!",
+      "file": "recordings/en/find-fruits-orange.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:watermelon",
+      "text": "Find the watermelon!",
+      "file": "recordings/en/find-fruits-watermelon.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:grapes",
+      "text": "Find the grapes!",
+      "file": "recordings/en/find-fruits-grapes.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:pineapple",
+      "text": "Find the pineapple!",
+      "file": "recordings/en/find-fruits-pineapple.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:pear",
+      "text": "Find the pear!",
+      "file": "recordings/en/find-fruits-pear.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:mango",
+      "text": "Find the mango!",
+      "file": "recordings/en/find-fruits-mango.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:papaya",
+      "text": "Find the papaya!",
+      "file": "recordings/en/find-fruits-papaya.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:lychee",
+      "text": "Find the lychee!",
+      "file": "recordings/en/find-fruits-lychee.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:longan",
+      "text": "Find the longan!",
+      "file": "recordings/en/find-fruits-longan.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:rambutan",
+      "text": "Find the rambutan!",
+      "file": "recordings/en/find-fruits-rambutan.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:durian",
+      "text": "Find the durian!",
+      "file": "recordings/en/find-fruits-durian.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:mangosteen",
+      "text": "Find the mangosteen!",
+      "file": "recordings/en/find-fruits-mangosteen.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:guava",
+      "text": "Find the guava!",
+      "file": "recordings/en/find-fruits-guava.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:starfruit",
+      "text": "Find the starfruit!",
+      "file": "recordings/en/find-fruits-starfruit.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:dragonfruit",
+      "text": "Find the dragon fruit!",
+      "file": "recordings/en/find-fruits-dragonfruit.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:jackfruit",
+      "text": "Find the jackfruit!",
+      "file": "recordings/en/find-fruits-jackfruit.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:coconut",
+      "text": "Find the coconut!",
+      "file": "recordings/en/find-fruits-coconut.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:lemon",
+      "text": "Find the lemon!",
+      "file": "recordings/en/find-fruits-lemon.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:lime",
+      "text": "Find the lime!",
+      "file": "recordings/en/find-fruits-lime.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:pomelo",
+      "text": "Find the pomelo!",
+      "file": "recordings/en/find-fruits-pomelo.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:grapefruit",
+      "text": "Find the grapefruit!",
+      "file": "recordings/en/find-fruits-grapefruit.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:mandarin",
+      "text": "Find the mandarin orange!",
+      "file": "recordings/en/find-fruits-mandarin.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:strawberry",
+      "text": "Find the strawberry!",
+      "file": "recordings/en/find-fruits-strawberry.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:blueberry",
+      "text": "Find the blueberry!",
+      "file": "recordings/en/find-fruits-blueberry.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:raspberry",
+      "text": "Find the raspberry!",
+      "file": "recordings/en/find-fruits-raspberry.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:blackberry",
+      "text": "Find the blackberry!",
+      "file": "recordings/en/find-fruits-blackberry.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:cherry",
+      "text": "Find the cherry!",
+      "file": "recordings/en/find-fruits-cherry.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:peach",
+      "text": "Find the peach!",
+      "file": "recordings/en/find-fruits-peach.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:plum",
+      "text": "Find the plum!",
+      "file": "recordings/en/find-fruits-plum.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:apricot",
+      "text": "Find the apricot!",
+      "file": "recordings/en/find-fruits-apricot.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:kiwi",
+      "text": "Find the kiwi fruit!",
+      "file": "recordings/en/find-fruits-kiwi.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:pomegranate",
+      "text": "Find the pomegranate!",
+      "file": "recordings/en/find-fruits-pomegranate.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:passionfruit",
+      "text": "Find the passion fruit!",
+      "file": "recordings/en/find-fruits-passionfruit.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:avocado",
+      "text": "Find the avocado!",
+      "file": "recordings/en/find-fruits-avocado.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:fig",
+      "text": "Find the fig!",
+      "file": "recordings/en/find-fruits-fig.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:date",
+      "text": "Find the date!",
+      "file": "recordings/en/find-fruits-date.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:persimmon",
+      "text": "Find the persimmon!",
+      "file": "recordings/en/find-fruits-persimmon.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:cantaloupe",
+      "text": "Find the cantaloupe!",
+      "file": "recordings/en/find-fruits-cantaloupe.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:honeydew",
+      "text": "Find the honeydew melon!",
+      "file": "recordings/en/find-fruits-honeydew.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:cranberry",
+      "text": "Find the cranberry!",
+      "file": "recordings/en/find-fruits-cranberry.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:mulberry",
+      "text": "Find the mulberry!",
+      "file": "recordings/en/find-fruits-mulberry.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:loquat",
+      "text": "Find the loquat!",
+      "file": "recordings/en/find-fruits-loquat.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:waxapple",
+      "text": "Find the wax apple!",
+      "file": "recordings/en/find-fruits-waxapple.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:soursop",
+      "text": "Find the soursop!",
+      "file": "recordings/en/find-fruits-soursop.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:custardapple",
+      "text": "Find the sugar apple!",
+      "file": "recordings/en/find-fruits-custardapple.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:salak",
+      "text": "Find the snake fruit!",
+      "file": "recordings/en/find-fruits-salak.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:sapodilla",
+      "text": "Find the sapodilla!",
+      "file": "recordings/en/find-fruits-sapodilla.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:fruits:breadfruit",
+      "text": "Find the breadfruit!",
+      "file": "recordings/en/find-fruits-breadfruit.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:colours:red",
+      "text": "Find red!",
+      "file": "recordings/en/find-colours-red.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:colours:blue",
+      "text": "Find blue!",
+      "file": "recordings/en/find-colours-blue.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:colours:green",
+      "text": "Find green!",
+      "file": "recordings/en/find-colours-green.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:colours:yellow",
+      "text": "Find yellow!",
+      "file": "recordings/en/find-colours-yellow.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:colours:purple",
+      "text": "Find purple!",
+      "file": "recordings/en/find-colours-purple.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:colours:orange",
+      "text": "Find orange!",
+      "file": "recordings/en/find-colours-orange.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:colours:pink",
+      "text": "Find pink!",
+      "file": "recordings/en/find-colours-pink.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:colours:brown",
+      "text": "Find brown!",
+      "file": "recordings/en/find-colours-brown.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:colours:black",
+      "text": "Find black!",
+      "file": "recordings/en/find-colours-black.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:colours:white",
+      "text": "Find white!",
+      "file": "recordings/en/find-colours-white.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:colours:grey",
+      "text": "Find grey!",
+      "file": "recordings/en/find-colours-grey.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "find:colours:turquoise",
+      "text": "Find turquoise!",
+      "file": "recordings/en/find-colours-turquoise.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "feedback:success",
+      "text": "Well Done!",
+      "file": "recordings/en/feedback-success.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "feedback:retry",
+      "text": "Let’s try another card. Take your time.",
+      "file": "recordings/en/feedback-retry.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "app:preview",
+      "text": "Take your time. Let’s find a matching card together.",
+      "file": "recordings/en/app-preview.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "app:reminder",
+      "text": "I’m here when you’re ready. Move your hand or choose a card.",
+      "file": "recordings/en/app-reminder.mp3",
+      "status": "required — not supplied"
+    },
+    {
+      "language": "en",
+      "id": "app:complete",
+      "text": "A lovely session. Thank you for playing!",
+      "file": "recordings/en/app-complete.mp3",
+      "status": "required — not supplied"
+    }
+  ]
+}
