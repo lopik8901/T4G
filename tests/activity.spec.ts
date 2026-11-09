@@ -21,7 +21,11 @@ test('setup is accessible and fits desktop and narrow screens', async ({ page })
 test('preview scores, pauses, resumes, resets, and keeps session best', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Or try a preview' }).click()
-  await page.getByRole('button', { name: 'Pop red balloon (+3)', exact: true }).focus()
+  const bonusBalloon = page.getByRole('button', { name: 'Pop rainbow balloon (+3)', exact: true })
+  await expect(bonusBalloon).toHaveClass(/bonus-balloon/)
+  expect(await bonusBalloon.evaluate(target => getComputedStyle(target, '::after').content)).toBe('"+3"')
+  await page.screenshot({ path: 'artifacts/rainbow-preview.png' })
+  await page.getByRole('button', { name: 'Pop rainbow balloon (+3)', exact: true }).focus()
   await page.keyboard.press('Enter')
   await expect(page.locator('.score-display strong')).toHaveText('3')
   await page.getByRole('button', { name: 'Pop blue balloon (+1)', exact: true }).focus()
@@ -36,8 +40,8 @@ test('preview scores, pauses, resumes, resets, and keeps session best', async ({
   await page.getByRole('button', { name: 'Extra large', exact: true }).click()
   await page.getByRole('button', { name: 'More balloons' }).click()
   await expect(page.locator('#count')).toHaveText('5')
-  await page.getByRole('switch').click()
-  await expect(page.getByRole('switch')).toHaveAttribute('aria-checked', 'false')
+  await page.getByRole('switch', { name: 'Show hand glow', exact: true }).click()
+  await expect(page.getByRole('switch', { name: 'Show hand glow', exact: true })).toHaveAttribute('aria-checked', 'false')
   await page.getByRole('button', { name: 'Reset round' }).click()
   await expect(page.locator('.score-display strong')).toHaveText('0')
   await expect(page.locator('.score-display small')).toContainText('4')
@@ -53,7 +57,7 @@ test('preview scores, pauses, resumes, resets, and keeps session best', async ({
 test('preview balloons travel in varied directions and pause freezes their positions', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Or try a preview' }).click()
-  await expect(page.getByRole('button', { name: 'Pop red balloon (+3)', exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Pop rainbow balloon (+3)', exact: true })).toBeVisible()
   const positions = () => page.locator('.balloon-hit').evaluateAll(targets => targets.map(target => {
     const rect = target.getBoundingClientRect()
     return { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 }

@@ -9,6 +9,20 @@ export function SettingsPanel({ settings, onChange, onReset, onFullscreen, onClo
     <h2>Make it comfortable.</h2>
     <p className="muted panel-description">Adjust the activity to suit your residents.</p>
     <div className="setting">
+      <div className="setting-row">
+        <label htmlFor="penalty-balloons">Penalty balloons</label>
+        <button
+          id="penalty-balloons"
+          type="button"
+          className="switch"
+          role="switch"
+          aria-checked={settings.penaltyBalloons}
+          onClick={() => update('penaltyBalloons', !settings.penaltyBalloons)}
+        ><span /></button>
+      </div>
+      <p className="field-note">Dodge dark -3 balloons. Touching one costs 3 points; missing it is safe in Endless too. When enabled during play, penalties appear as new balloons arrive.</p>
+    </div>
+    <div className="setting">
       <label>Pace</label>
       <div className="segmented" aria-label="Pace">
         <button

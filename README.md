@@ -5,10 +5,22 @@ A camera-based balloon game. The live webcam fills the play screen like a mirror
 Choose a **Round type** and a **Pace** before starting:
 
 - **Standard (timed):** pop as many balloons as possible in 30, 60, or 90 seconds. The default is 60 seconds. Missing a balloon does not end the round.
-- **Endless:** there is no time limit. The first missed balloon ends the round.
+- **Endless:** start with an empty screen. After a one-second pause, balloons begin entering from the edges, with the initial arrivals spaced 0.6 seconds apart. All configured balloon slots (four by default, adjustable from three to six) keep returning after pops, so multiple balloons stay in play. There is no time limit; the first missed regular or rainbow balloon ends the round. Penalty balloons are safe to miss. Replay and Reset round repeat the empty opening.
 - **Pace:** Standard uses the former Lively speed. Very fast moves balloons 16 times faster, making them easy to miss. Either pace works with either round type. Staff can also set a custom speed.
 
-Each round starts with zero pops and points. A balloon is missed when it travels completely beyond the play area's outer margin. Results show **balloons popped**, **points**, **time played**, and your **best round this visit**. Best balloon totals are tracked separately for Endless and each timed duration, across all paces, and reset on page reload. Every balloon counts as one pop, including red balloons; red balloons award three points and the other colors award one. Choose **Play again** to start a fresh round with the same settings. Preview practice before starting does not count toward the round. Pausing, opening Staff controls, or switching browser tabs freezes the round and timer.
+Each round starts with zero pops and points. A balloon is missed when it travels completely beyond the play area's outer margin. Results show **balloons popped**, **points**, **time played**, and your **best round this visit**. Best balloon totals are tracked separately for Endless and each timed duration, across all paces, and reset on page reload. Every regular or rainbow balloon counts as one successful pop; rainbow balloons award three points and the other colors award one. Choose **Play again** to start a fresh round with the same settings. Preview practice before starting does not count toward the round. Pausing, opening Staff controls, or switching browser tabs freezes the round and timer.
+
+**Rainbow balloons are the bonus balloons:** their rainbow stripes and **+3** badge distinguish them from single-colour balloons worth one point. They still count as one balloon in the round total.
+
+## Optional penalty balloons
+
+Turn **Penalty balloons** on in setup or Staff controls for a dodge challenge. This setting is off by default and works with either round type and pace.
+
+- Dark balloons marked **-3 / DODGE** subtract three points when your hand circle touches them. Scores can go below zero.
+- Let them float away. Missing a penalty balloon never ends Endless and does not count as a miss.
+- Penalty contacts do not add to your successful balloon total. Regular balloons still give +1 and rainbow balloons give +3.
+- About one in five new arrivals is a penalty when enabled. Timed rounds also start with one penalty balloon. Endless keeps its empty, staggered opening.
+- Enabling the option during play adds penalties as new balloons arrive. Turning it off immediately converts existing penalties to ordinary balloons.
 
 ## How to pop with your hand
 
@@ -70,7 +82,7 @@ The first install downloads dependencies and Google's versioned Hand Landmarker 
 1. Select **Enable camera**, then allow camera access in the browser.
 2. Wait for **Live mirror**. Confirm that residents and their hands are visible.
 3. Choose a round type, time limit (for timed rounds), and pace. Select **Start activity**. The mirror fills the window and the setup controls disappear.
-4. Move your hand circle over a balloon. It pops on contact. Regular balloons score 1; red balloons score 3 with a gentle extra burst.
+4. Move your hand circle over a balloon. It pops on contact. Regular balloons score 1; rainbow balloons score 3 with a gentle extra burst.
 5. Use **Pause** for a break or **Finish** to stop the webcam and return to setup.
 
 **Try a preview** uses clickable balloons without requesting a camera. It is clearly labeled and is useful for checking the interface. Balloon targets also work with Tab and Enter. This preview does not demonstrate hand detection.
@@ -84,6 +96,7 @@ Use a well-lit space with hands visible to the camera. The game starts at the st
 ## Staff controls
 
 - Pace (**Standard** or **Very fast**), custom balloon speed, size, and number (3–6). Each balloon has its own speed and direction; the speed control adjusts them all together. Round type and time limit are chosen on the setup screen.
+- Optional penalty balloons: dodge the dark -3 balloons.
 - Sound volume, including mute.
 - Touch sensitivity: higher values make contact with a balloon easier.
 - Optional glow around detected palms.
@@ -91,7 +104,7 @@ Use a well-lit space with hands visible to the camera. The game starts at the st
 - **Reset round** clears the current score, round timer, and balloon totals while retaining completed-round records and the highest points total in this page session.
 - Fullscreen, pause, resume, and finish.
 
-Opening settings during play pauses the activity. Close settings and choose **Continue playing** to resume. Switching away from the browser tab also pauses play. Balloons travel horizontally, vertically, and diagonally. Popped balloons return after a 1.2-second delay from a randomly selected screen edge, with a fresh direction and speed. Missed balloons return during timed rounds; in Endless, the first miss ends play. Reduced-motion preferences remove nonessential swaying and particles; balloon travel remains part of the game.
+Opening settings during play pauses the activity. Close settings and choose **Continue playing** to resume. Switching away from the browser tab also pauses play. Balloons travel horizontally, vertically, and diagonally. Popped balloons return after a 1.2-second delay from a randomly selected screen edge, with a fresh direction and speed. Missed balloons return during timed rounds; in Endless, the first missed regular or rainbow balloon ends play. Penalty balloons are always safe to miss. Reduced-motion preferences remove nonessential swaying and particles; balloon travel remains part of the game.
 
 ## Privacy and implementation
 
@@ -117,15 +130,15 @@ Browser checks use Playwright with an installed Google Chrome and a synthetic ca
 npx playwright test
 ```
 
-They cover setup, responsive overflow, accessibility, preview scoring, staff controls, pause/resume, fullscreen, permission denial, local worker inference, camera cleanup, hand-circle contact, hand loss, timed results, Endless losses, and replay. Screenshots are saved in `artifacts/`. Contact and reconnection checks use controlled landmarks and a canvas video stream. Physical camera reconnection remains a manual check. Synthetic checks do not establish real-hand detection accuracy or performance on every laptop.
+They cover setup, responsive overflow, accessibility, preview scoring, staff controls, pause/resume, fullscreen, permission denial, local worker inference, camera cleanup, hand-circle contact, hand loss, penalty scoring and controls, timed results, Endless losses, and replay. Screenshots are saved in `artifacts/`. Contact and reconnection checks use controlled landmarks and a canvas video stream. Physical camera reconnection remains a manual check. Synthetic checks do not establish real-hand detection accuracy or performance on every laptop.
 
 Before using the activity with residents, check on the actual laptop and TV:
 
 - The live image appears immediately after camera permission and behaves like a mirror.
 - A raised hand's glow aligns with its palm, including near the left and right edges.
-- Moving the hand circle over a balloon pops it automatically; red gives 3 points and other colors give 1.
+- Moving the hand circle over a balloon pops it automatically; rainbow gives 3 points and other colors give 1.
 - Keeping your hand still also pops balloons that move into the circle.
-- Timed play stops at the selected limit. Endless ends on the first missed balloon. Play again clears the timer and totals.
+- Timed play stops at the selected limit. Endless ends on the first missed regular or rainbow balloon; penalty balloons may pass safely. Play again clears the timer and totals.
 - When hands leave the image, their circles disappear and no further contact is counted. When they return, contact works again.
 - Balloon speed, size, sensitivity, volume, pause, and fullscreen suit the space.
 - Four-hand mode remains responsive on the chosen laptop; use two hands if needed.

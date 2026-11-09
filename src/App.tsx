@@ -35,8 +35,10 @@ export default function App() {
   const onPop = useCallback((pop: Pop) => {
     if (session === 'playing') {
       if (round.current.endReason) return
-      round.current = recordRoundHit(round.current)
-      setRoundDisplay(round.current)
+      if (pop.points > 0) {
+        round.current = recordRoundHit(round.current)
+        setRoundDisplay(round.current)
+      }
     }
     setScore(value => value + pop.points)
     setPops(value => [...value, pop])
@@ -69,6 +71,12 @@ export default function App() {
 
   useEffect(() => { setBest(value => Math.max(value, score)) }, [score])
   useEffect(() => {
+    // Turning the option off also clears penalties that are already on screen.
+    if (!settings.penaltyBalloons) {
+      world.current.balloons.forEach(balloon => { balloon.penalty = false })
+    }
+  }, [settings.penaltyBalloons])
+  useEffect(() => {
     const media = matchMedia('(prefers-reduced-motion: reduce)')
     const change = () => setReducedMotion(media.matches)
     media.addEventListener('change', change)
@@ -96,7 +104,7 @@ export default function App() {
   const reset = () => {
     setScore(0)
     setPops([])
-    world.current = createWorld()
+    world.current = createWorld({ startEmpty: roundMode === 'endless', penaltyBalloons: settings.penaltyBalloons })
     round.current = createRound(roundMode, roundDuration)
     setRoundDisplay(round.current)
   }
@@ -198,6 +206,20 @@ export default function App() {
               onDurationChange={setRoundDuration}
             />
             <div className="quick-setting">
+              <label htmlFor="quick-penalties">Penalty balloons</label>
+              <select
+                id="quick-penalties"
+                value={settings.penaltyBalloons ? 'on' : 'off'}
+                onChange={event => setSettings(current => ({ ...current, penaltyBalloons: event.target.value === 'on' }))}
+              >
+                <option value="off">Off</option>
+                <option value="on">On · dodge -3</option>
+              </select>
+            </div>
+            {settings.penaltyBalloons && (
+              <p className="field-note">Dodge dark -3 balloons. Touching one costs 3 points; letting it pass is always safe.</p>
+            )}
+            <div className="quick-setting">
               <label htmlFor="quick-mode">Pace</label>
               <select
                 id="quick-mode"
@@ -234,7 +256,7 @@ export default function App() {
         </aside>
       </div>
 
-      <div className="activity-notes"><span><ShieldCheck size={18} /><span>Your camera stays <strong>yours.</strong> Nothing is recorded or uploaded.</span></span><span className="red-tip"><i /> <span>Red balloons hold a little extra joy. <strong>+3 points</strong></span></span></div>
+      <div className="activity-notes"><span><ShieldCheck size={18} /><span>Your camera stays <strong>yours.</strong> Nothing is recorded or uploaded.</span></span><span className="rainbow-tip"><i /> <span>Rainbow balloons hold a little extra joy. <strong>+3 points</strong></span></span></div>
       <footer><span>Designed for connection, one little pop at a time.</span><button className="text-button" onClick={() => helpModal.current?.showModal()}>Setting up on a TV? <ChevronRight size={16} /></button></footer>
     </main>
 
@@ -255,8 +277,9 @@ export default function App() {
         <h3>Move your hand circle to pop</h3>
         <p>Raise either hand and move the circle over a balloon. It pops automatically when the circle touches it. You can keep your hand open and move straight to the next balloon.</p>
         <h3>Choose your challenge</h3>
-        <p>Standard timed rounds give you 30, 60, or 90 seconds to pop as many balloons as possible. Endless rounds end as soon as one balloon gets away. Choose Standard or Very fast pace for either round type. Each balloon counts as one pop; red balloons give three points.</p>
+        <p>Standard timed rounds give you 30, 60, or 90 seconds to pop as many balloons as possible. Endless rounds end when a regular or rainbow balloon gets away; penalty balloons are safe to miss. Choose Standard or Very fast pace for either round type. Each regular or rainbow balloon counts as one pop; rainbow balloons give three points.</p>
         <h3>Make it comfortable</h3>
+        <p>For an extra challenge, turn on Penalty balloons. Dodge the dark balloons marked -3 / DODGE. Touching one costs three points, but letting it pass is safe in both round types. Penalties do not count toward your balloon total.</p>
         <p>Staff controls let you make balloons larger, slow them down, lower the volume, and make touches easier. Pause for a break at any time.</p>
         <h3>Playing together on a TV</h3>
         <p>Connect your laptop to the TV with HDMI. Duplicate the display, keep the webcam facing the residents, and select Fullscreen. Use a well-lit space and keep hands in view. For two residents, choose 4 hands in Staff controls before enabling the camera.</p>

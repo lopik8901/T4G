@@ -10,9 +10,9 @@ export function playPop(points: number, volume: number) {
   const oscillator = context.createOscillator()
   const gain = context.createGain()
   const now = context.currentTime
-  oscillator.type = 'sine'
-  oscillator.frequency.setValueAtTime(points === 3 ? 520 : 650, now)
-  oscillator.frequency.exponentialRampToValueAtTime(180, now + 0.16)
+  oscillator.type = points < 0 ? 'triangle' : 'sine'
+  oscillator.frequency.setValueAtTime(points < 0 ? 140 : points === 3 ? 520 : 650, now)
+  oscillator.frequency.exponentialRampToValueAtTime(points < 0 ? 70 : 180, now + 0.16)
   gain.gain.setValueAtTime(0, now)
   gain.gain.linearRampToValueAtTime(volume * 0.16, now + 0.012)
   gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2)

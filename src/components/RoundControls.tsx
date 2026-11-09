@@ -29,7 +29,7 @@ export function RoundControls({ mode, duration, onModeChange, onDurationChange }
     <p className="field-note">
       {mode === 'timed'
         ? 'Pop as many balloons as you can before time runs out. Misses do not end the round.'
-        : 'Keep popping for as long as you can. Missing one balloon ends the round.'}
+        : 'Start empty, then balloons arrive one after another. Missing a regular or rainbow balloon ends the round. Let penalty balloons pass.'}
     </p>
   </>
 }

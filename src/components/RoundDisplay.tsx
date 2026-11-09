@@ -4,7 +4,7 @@ import type { Round } from '../game/round'
 
 export function RoundStatus({ round }: { round: Round }) {
   return <div className="round-status" aria-label="Round progress">
-    <span>{round.mode === 'timed' ? 'Standard timed round' : 'Endless · one miss ends the round'}</span>
+    <span>{round.mode === 'timed' ? 'Standard timed round' : 'Endless · only miss penalty balloons'}</span>
     <strong>{round.hits} {round.hits === 1 ? 'balloon' : 'balloons'} popped</strong>
     <span>
       {round.mode === 'timed'
@@ -40,7 +40,7 @@ export function RoundResults({ round, score, bestHits, ready, onReplay, onExit }
     <p className="round-record">
       Best {round.mode === 'timed' ? `${round.duration}-second timed` : 'Endless'} round this visit: {bestHits} {bestHits === 1 ? 'balloon' : 'balloons'}.
     </p>
-    <p>Every balloon counts as one pop. Red balloons give three points.</p>
+    <p>Regular and rainbow balloons count toward your total. Rainbow gives +3 points; penalty balloons cost 3 points and do not count as a successful pop.</p>
     <button className="primary-button" onClick={onReplay} disabled={!ready}><Play size={18} /> Play again</button>
     <button className="text-button" onClick={onExit}><ArrowLeft size={16} /> Back to setup</button>
   </div>

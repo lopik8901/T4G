@@ -1,6 +1,7 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { balloonSpeeds, createWorld, defaultSettings, mapToMirror, overlaps, popBalloon, stepWorld } from './logic.ts'
+import { advanceRound, createRound } from './round.ts'
 
 test('mirrors coordinates and compensates for a 4:3 camera cropped onto a 16:9 TV', () => {
   assert.deepEqual(mapToMirror({ x: 0.25, y: 0.5 }, 640, 480, 1920, 1080), { x: 0.75, y: 0.5 })
@@ -11,11 +12,97 @@ test('generous collision covers the balloon edge but not a distant hand', () => 
   assert.ok(overlaps({ x: 0.56, y: 0.5 }, { x: 0.5, y: 0.5 }, 50, 1000, 600, 1.35))
   assert.ok(!overlaps({ x: 0.8, y: 0.5 }, { x: 0.5, y: 0.5 }, 50, 1000, 600, 1.35))
 })
-test('red awards three, other colors one, and simultaneous touches cannot double-score', () => {
+test('rainbow awards three, other colors one, and simultaneous touches cannot double-score', () => {
   const world = createWorld()
   assert.equal(popBalloon(world, world.balloons[0]), 3)
   assert.equal(popBalloon(world, world.balloons[0]), 0)
   assert.equal(popBalloon(world, world.balloons[1]), 1)
+})
+
+test('penalty balloons subtract three points only once, including with a rainbow base colour', () => {
+  const world = createWorld({ penaltyBalloons: true })
+  const balloon = world.balloons[2]
+  assert.equal(balloon.penalty, true)
+  balloon.color = 0
+  assert.equal(popBalloon(world, balloon), -3)
+  assert.equal(popBalloon(world, balloon), 0, 'simultaneous touches cannot charge twice')
+})
+
+test('dodging a penalty is safe in Endless, while missing a regular balloon still ends it', context => {
+  context.mock.method(Math, 'random', () => 0.5)
+  const settings = { ...defaultSettings, penaltyBalloons: true }
+  for (const outside of [{ x: -0.26, y: 0.5 }, { x: 1.26, y: 0.5 }, { x: 0.5, y: -0.26 }, { x: 0.5, y: 1.26 }]) {
+    const world = createWorld({ penaltyBalloons: true })
+    const balloon = Object.assign(world.balloons[2], outside)
+    let round = createRound('endless')
+    const penaltyMisses = stepWorld(world, 0.016, settings)
+    assert.equal(penaltyMisses, 0)
+    round = advanceRound(round, 0.016, penaltyMisses)
+    assert.equal(round.endReason, null)
+
+    Object.assign(balloon, outside, { penalty: false })
+    const regularMisses = stepWorld(world, 0.016, settings)
+    assert.equal(regularMisses, 1)
+    round = advanceRound(round, 0.016, regularMisses)
+    assert.equal(round.endReason, 'missed-balloon')
+  }
+})
+
+test('new penalties appear only when enabled, and switching off clears existing penalties', context => {
+  context.mock.method(Math, 'random', () => 0.1)
+  const world = createWorld()
+  const balloon = world.balloons[0]
+  assert.ok(world.balloons.every(balloon => !balloon.penalty))
+  popBalloon(world, balloon)
+  for (let frame = 0; frame < 26; frame++) stepWorld(world, 0.05, { ...defaultSettings, penaltyBalloons: true })
+  assert.equal(balloon.penalty, true)
+  stepWorld(world, 0.016, defaultSettings)
+  assert.equal(balloon.penalty, false)
+
+  popBalloon(world, balloon)
+  for (let frame = 0; frame < 26; frame++) stepWorld(world, 0.05, defaultSettings)
+  assert.equal(balloon.penalty, false, 'new penalties cannot appear with the option off')
+})
+
+test('an empty opening releases balloons one at a time without counting waiting balloons as misses', context => {
+  context.mock.method(Math, 'random', () => 0.5)
+  const world = createWorld({ startEmpty: true })
+  assert.ok(world.balloons.every(balloon => balloon.readyAt > world.time))
+  assert.equal(popBalloon(world, world.balloons[0]), 0, 'a waiting balloon cannot be popped')
+
+  for (let frame = 0; frame < 18; frame++) {
+    assert.equal(stepWorld(world, 0.05, defaultSettings), 0)
+  }
+  assert.ok(world.balloons.every(balloon => balloon.readyAt > world.time), 'the opening stays empty for the first second')
+
+  for (let frame = 0; frame < 4; frame++) stepWorld(world, 0.05, defaultSettings)
+  assert.equal(world.balloons[0].readyAt, 0)
+  assert.ok(world.balloons[0].y < 0, 'the first balloon enters from outside the screen')
+  assert.ok(world.balloons.slice(1).every(balloon => balloon.readyAt > world.time))
+
+  for (let frame = 0; frame < 140; frame++) stepWorld(world, 0.05, defaultSettings)
+  assert.equal(world.balloons.slice(0, defaultSettings.count).filter(balloon => balloon.readyAt === 0).length, 4)
+})
+
+test('the empty opening keeps all balloon slots returning throughout play', context => {
+  context.mock.method(Math, 'random', () => 0.5)
+  const world = createWorld({ startEmpty: true })
+  const poppedSlots = new Set<number>()
+  let totalPops = 0
+
+  for (let frame = 0; frame < 800; frame++) {
+    assert.equal(stepWorld(world, 0.05, defaultSettings, true), 0)
+    for (const balloon of world.balloons.slice(0, defaultSettings.count)) {
+      if (balloon.readyAt > world.time || balloon.y < 0 || balloon.y > 1) continue
+      if (popBalloon(world, balloon)) {
+        poppedSlots.add(balloon.id)
+        totalPops++
+      }
+    }
+  }
+
+  assert.equal(poppedSlots.size, defaultSettings.count, 'all four slots keep participating')
+  assert.ok(totalPops > defaultSettings.count * 2, 'balloons continue returning after the opening wave')
 })
 test('popped balloons enter from all four edges and travel into the play area', context => {
   let draw = 0
