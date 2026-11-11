@@ -1,4 +1,4 @@
-import type { TrackedHand } from '../../camera/useMirror.ts'
+import type { TrackedHand } from './useGameMirror.ts'
 type Track = TrackedHand & { id:number; seen:number; born:number; origin:{x:number;y:number}; motion:number; vx:number; vy:number }
 const distance=(a:{x:number;y:number},b:{x:number;y:number})=>Math.hypot(a.x-b.x,a.y-b.y)
 /** Ephemeral geometry tracking, never identity recognition. Ambiguity fails closed. */

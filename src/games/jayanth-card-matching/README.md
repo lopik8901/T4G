@@ -21,7 +21,7 @@ remains at `/`. The two games have separate entries and are not yet integrated.
 | RCA staff operating the activity | [Staff guide](STAFF_GUIDE.md) |
 | Developer understanding the implementation | [Architecture](ARCHITECTURE.md) |
 | Verification, commands and evidence limits | [Testing](TESTING.md) |
-| Teammate reviewing or integrating the branch | [Integration guide](INTEGRATION_GUIDE.md) |
+| Teammate reviewing or integrating the branch | [Integration guide](INTEGRATION_GUIDE.md), [latest-main PR review](PR_REVIEW.md) |
 | Synthetic measurements and methodology | [Performance](PERFORMANCE.md) |
 | English speech and future human recordings | [Recording guide](RECORDINGS.md) |
 | Photograph attribution | [Photo credits](assets/PHOTO_CREDITS.md), [photo manifest](assets/photo-manifest.json) |

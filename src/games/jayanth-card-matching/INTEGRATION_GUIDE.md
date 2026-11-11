@@ -50,9 +50,13 @@ the publishing checkout. Check ownership/permissions before contributing edits.
 | `public/hand-tracker.js` | Existing classic worker; init requests two hands; one worker instance per active game camera |
 | `public/mediapipe/` | Generated local model, JS bundle and WASM; prepared by `npm run setup:assets` / postinstall |
 | `src/game/logic.ts` | `Point` type, plus `mapToMirror` in the retained legacy `mirror.ts` test helper |
-| `src/camera/useMirror.ts` | Type-only frame/hand imports; the Balloon camera hook itself is not mounted by this game |
+| `src/camera/useMirror.ts` | Not imported or mounted by Card Matching; its frame schema is independent |
 
-The live camera implementation is game-local `useGameMirror.ts`. Current gameplay
+The live camera implementation and frame/hand types are game-local
+`useGameMirror.ts`. The November 11 main comparison found that Balloon Popper now
+uses centre-only hands; importing its `TrackedHand` broke Card Matching's combined
+TypeScript build. Card Matching now imports its own types, retaining its existing
+points-based smoothing without changing either camera implementation. Current gameplay
 mapping is `framing.ts`; do not mistake legacy `mirror.ts` for the active geometry.
 The public worker file is shared, but two mounted hooks would still create two
 streams and two worker/model instances. Hand control is one active pointer even
@@ -116,7 +120,7 @@ Agree and test these rules before reusing a stream across games:
   loop. A context/provider must not mount both existing hooks underneath it.
 - Subscribers receive a fresh frame schema with dimensions, timestamps and clear
   stale/error semantics. Card Matching expects 21 source landmarks for adapter
-  processing; Balloon collision uses palm/fingertip points. Preserve both contracts.
+  processing; current Balloon Popper frames expose palm centres only. Preserve both contracts.
 - One owner handles permission, device change, unplug, retry and final End. Device
   replacement first disposes the previous run; generation tokens reject late data.
 - Switching resets dwell, selected-hand state and input locks. A held hand must not
