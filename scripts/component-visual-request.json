@@ -1,0 +1,12 @@
+{
+  "spec": {
+    "id": "soft-star-art",
+    "name": "Soft star illustration",
+    "description": "A friendly scalable celestial illustration built from layered bounded primitives.",
+    "type": "visual",
+    "capabilities": ["star-art", "2d-illustrations"],
+    "interactions": ["idle", "selected", "completed", "disabled"],
+    "parameters": []
+  },
+  "request": "Create a reusable warm celestial illustration for large seated-care targets using the available ellipse, rounded rect and line primitives. Use a coherent gold/cream/teal palette, layered shapes, soft outline and simple twinkle details. No URLs, text, paths, filters or markup. Use idle, selected, completed and disabled state scales and gentle-pulse. It must be recognizable and attractive rather than a single generic circle. The trusted renderer will control size and state."
+}

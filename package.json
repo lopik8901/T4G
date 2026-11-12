@@ -1,40 +1,60 @@
 {
-  "name": "balloon-pop",
+  "name": "careplay-studio",
   "private": true,
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
+    "test:demos": "tsx --test demos/balloon-pop/src/game/*.test.ts src/games/jayanth-card-matching/*.test.ts",
+    "components": "node --env-file-if-exists=.env --import tsx scripts/components.ts",
+    "validate:components": "node --env-file-if-exists=.env --import tsx scripts/validate-components.ts",
+    "dev": "concurrently -k -n web,api \"vite --host 127.0.0.1\" \"node --env-file-if-exists=.env --import tsx server/index.ts\"",
+    "dev:web": "vite --host 127.0.0.1",
+    "dev:api": "node --env-file-if-exists=.env --import tsx server/index.ts",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "node --test src/game/logic.test.ts",
+    "test": "tsx --test src/game/logic.test.ts src/studio/*.test.ts server/*.test.ts",
     "setup:assets": "node scripts/setup-assets.mjs",
-    "postinstall": "node scripts/setup-assets.mjs"
+    "postinstall": "node scripts/setup-assets.mjs",
+    "validate:autonomous": "node --env-file-if-exists=.env --import tsx scripts/validate-autonomous.ts",
+    "sandbox:build": "node --env-file-if-exists=.env --import tsx scripts/build-sandbox.ts"
   },
   "engines": {
     "node": ">=22.18.0"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^3.0.139",
     "@fontsource/fraunces": "^5.3.0",
     "@fontsource/nunito-sans": "^5.3.0",
     "@mediapipe/tasks-vision": "^1.1.0",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.1",
+    "ai": "^6.0.325",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "howler": "^2.2.4",
     "lucide-react": "^1.57.0",
+    "radix-ui": "^1.8.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "three": "^0.186.1"
+    "tailwind-merge": "^3.7.0",
+    "three": "^0.186.1",
+    "typescript-compiler": "npm:typescript@5.9.3",
+    "zod": "^4.6.7",
+    "zustand": "^5.1.0"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.64.1",
     "@tailwindcss/vite": "^4.3.3",
+    "@types/howler": "^2.2.13",
     "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@types/three": "^0.186.0",
     "@vitejs/plugin-react": "^6.1.2",
+    "concurrently": "^10.0.7",
     "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vite": "^8.3.4"
   }

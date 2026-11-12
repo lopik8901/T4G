@@ -4,7 +4,7 @@ import AxeBuilder from '@axe-core/playwright'
 test('setup is accessible and fits desktop and narrow screens', async ({ page }) => {
   const errors: string[] = []
   page.on('pageerror', error => errors.push(error.message))
-  await page.goto('/')
+  await page.goto('/balloon')
   await expect(page.getByRole('button', { name: 'Enable camera', exact: true })).toBeVisible()
   await page.screenshot({ path: 'artifacts/setup-desktop.png', fullPage: true })
   const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()
@@ -19,7 +19,7 @@ test('setup is accessible and fits desktop and narrow screens', async ({ page })
 })
 
 test('preview scores, pauses, resumes, resets, and keeps session best', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/balloon')
   await page.getByRole('button', { name: 'Or try a preview' }).click()
   await page.getByRole('button', { name: 'Pop red balloon (+3)', exact: true }).focus()
   await page.keyboard.press('Enter')
@@ -51,7 +51,7 @@ test('preview scores, pauses, resumes, resets, and keeps session best', async ({
 })
 
 test('preview balloons travel in varied directions and pause freezes their positions', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/balloon')
   await page.getByRole('button', { name: 'Or try a preview' }).click()
   await expect(page.getByRole('button', { name: 'Pop red balloon (+3)', exact: true })).toBeVisible()
   const positions = () => page.locator('.balloon-hit').evaluateAll(targets => targets.map(target => {
@@ -89,7 +89,7 @@ test('local camera and hand worker load without sending frames externally', asyn
   page.on('pageerror', error => errors.push(error.message))
   // MediaPipe sends this successful CPU initialization notice to stderr.
   page.on('console', message => { if (message.type() === 'error' && message.text() !== 'INFO: Created TensorFlow Lite XNNPACK delegate for CPU.') errors.push(message.text()) })
-  await page.goto('/')
+  await page.goto('/balloon')
   await page.getByRole('button', { name: 'Enable camera', exact: true }).click()
   await expect(page.locator('.status-pill')).toContainText('Live mirror', { timeout: 45000 })
   expect(await page.locator('video').evaluate((video: HTMLVideoElement) => video.videoWidth > 0 && video.srcObject instanceof MediaStream)).toBe(true)
@@ -111,7 +111,7 @@ test('permission denial is actionable and preview remains usable', async ({ page
   await page.addInitScript(() => {
     navigator.mediaDevices.getUserMedia = async () => { throw new DOMException('Permission denied', 'NotAllowedError') }
   })
-  await page.goto('/')
+  await page.goto('/balloon')
   await page.getByRole('button', { name: 'Enable camera', exact: true }).click()
   await expect(page.getByRole('alert')).toContainText('Camera access is blocked')
   await page.getByRole('button', { name: 'Or try a preview' }).click()
@@ -120,7 +120,7 @@ test('permission denial is actionable and preview remains usable', async ({ page
 
 test('staff controls are keyboard accessible with reduced motion', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
-  await page.goto('/')
+  await page.goto('/balloon')
   await page.getByRole('button', { name: 'Staff controls', exact: true }).click()
   await expect(page.getByRole('dialog', { name: 'Staff controls' })).toBeVisible()
   const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze()
@@ -160,7 +160,7 @@ test('tracked palm contact uses mirrored screen coordinates and hand loss stops 
     }
     Object.defineProperty(window, 'Worker', { value: cameraWorker })
   })
-  await page.goto('/')
+  await page.goto('/balloon')
   await page.getByRole('button', { name: 'Enable camera', exact: true }).click()
   await expect(page.locator('.status-pill')).toContainText('Live mirror')
   await page.getByRole('button', { name: 'Start activity', exact: true }).click()

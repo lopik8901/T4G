@@ -11,3 +11,4 @@ artifacts/
 !.env.example
 *.pem
 *.key
+.careplay/
