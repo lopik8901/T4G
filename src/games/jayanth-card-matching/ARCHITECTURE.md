@@ -171,7 +171,7 @@ calibrate the crop transform itself or assume source coordinates equal screen pi
 not React state. It rejects stale frames, caches visible `[data-dwell]` rectangles,
 refreshes on relevant DOM/viewport changes and chooses the nearest overlapping
 candidate using a small hit margin. This is point-in-rectangle UI selection,
-separate from Balloon Popper's balloon/palm/fingertip collision model.
+separate from Balloon Popper's world-space balloon collision model.
 
 [dwell.ts](dwell.ts) handles fresh duration and consumed-target blocking. Scene
 changes require deliberate movement from the **new mapped point**, preventing a
@@ -182,9 +182,12 @@ least 1000 ms is required. The ring and hover border are imperative visual feedb
 
 [mirror.ts](mirror.ts) retains a legacy helper using runtime `mapToMirror` from
 repository-root [src/game/logic.ts](../../game/logic.ts), primarily exercised by
-regression tests. Current gameplay uses `framing.ts`, not that helper. Other
-cross-folder imports are types (`Point`, `HandFrame`, `TrackedHand`) from existing
-Balloon/camera modules. Keep these distinctions clear when extracting shared code.
+regression tests. Current gameplay uses `framing.ts`, not that helper. `Point` remains a cross-folder type import from the existing game logic module.
+`HandFrame` and `TrackedHand` come from Card Matching's own `useGameMirror.ts`, not
+Balloon Popper's camera hook. Main now uses a centre-only hand shape, whereas this
+adapter retains points for its smoothing pipeline. These type-only local imports
+do not create a runtime camera dependency or a second camera instance. Keep the
+schemas distinct when extracting shared code.
 
 ## Animation, rendering and audio
 

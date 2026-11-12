@@ -31,7 +31,7 @@ function TrustedGamePreview({ config, photos, launched, onExit }: { config: Game
   const handRings = useRef<(HTMLDivElement | null)[]>([])
   const audio = useRef<ReturnType<typeof activityAudio> | null>(null), cooldown = useRef<number[]>([]), timers = useRef<ReturnType<typeof setTimeout>[]>([])
   const reduced = useRef(matchMedia('(prefers-reduced-motion: reduce)').matches)
-  const settings = { speed: config.speed, size: config.size, count: config.count, volume: config.volume, sensitivity: config.sensitivity, indicators: true, hands: config.players * 2 }
+  const settings = { speed: config.speed, size: config.size, count: config.count, volume: config.volume, sensitivity: config.sensitivity, indicators: true, penaltyBalloons: false, hands: config.players * 2 }
   const reset = useCallback(() => { world.current = createWorld(); objects.current = Array.from({ length: 6 }, (_, id) => ({ id, done: false, progress: 0 })); cooldown.current = []; setScore(0); setProgress(0); setPops([]) }, [])
   useEffect(() => { reset() }, [config.template, config.object, reset])
   useEffect(() => {
@@ -90,7 +90,7 @@ function TrustedGamePreview({ config, photos, launched, onExit }: { config: Game
       if (rect && playing) {
         if (config.template === 'balloons') stepWorld(world.current, delta, settings, reduced.current, rect.width / rect.height)
         const handFrame = mirror.frameRef.current
-        const hands = config.inputs.includes('hand_tracking') && now - handFrame.time < 280 ? handFrame.hands.flatMap(h => h.points.map(p => mapToMirror(p, handFrame.width, handFrame.height, rect.width, rect.height))) : []
+        const hands = config.inputs.includes('hand_tracking') && now - handFrame.time < 280 ? handFrame.hands.map(h => mapToMirror(h.center, handFrame.width, handFrame.height, rect.width, rect.height)) : []
         targets.current.forEach((target, i) => {
           if (!target || i >= config.count) return
           const floating = config.template === 'balloons', balloon = world.current.balloons[i]

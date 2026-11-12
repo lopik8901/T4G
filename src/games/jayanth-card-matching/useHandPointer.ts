@@ -1,5 +1,5 @@
 import { useEffect, useRef, type RefObject } from 'react'
-import type { HandFrame } from '../../camera/useMirror'
+import type { HandFrame } from './useGameMirror'
 import type { HandSelector } from './tracking'
 import {videoPoint,type Framing} from './framing'
 import { initialDwell, stepDwell } from './dwell'

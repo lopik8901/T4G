@@ -190,3 +190,12 @@ External credit URLs preserve their supplied provenance; this is not a new legal
 opinion or an independent revalidation of every remote licence page.
 
 The starfruit source explicitly lacks photographer information; the credits/manifest now identify that uncertainty and USDA ARS provenance instead of leaving a blank author. Public-domain records use their source pages when no separate licence URL is supplied.
+
+## Latest-main coexistence review (11 November 2026)
+
+[PR_REVIEW.md](PR_REVIEW.md) records the merge simulation against main `e7e2490`,
+the required game-local tracking-type correction, and verification of the combined
+tree. Current-main Balloon tests are now 18 unit/11 browser cases; the earlier
+9/7 counts above are historical feature-baseline checks. Card Matching remains
+57 unit and 67 distinct browser cases, with two full-run ultrawide failures passing
+isolated reruns. No Balloon gameplay or committed tests were modified.

@@ -12,7 +12,7 @@
     "dev:api": "node --env-file-if-exists=.env --import tsx server/index.ts",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "tsx --test src/game/logic.test.ts src/studio/*.test.ts server/*.test.ts",
+    "test": "tsx --test src/game/*.test.ts src/studio/*.test.ts server/*.test.ts",
     "setup:assets": "node scripts/setup-assets.mjs",
     "postinstall": "node scripts/setup-assets.mjs",
     "validate:autonomous": "node --env-file-if-exists=.env --import tsx scripts/validate-autonomous.ts",
